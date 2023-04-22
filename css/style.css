@@ -1,0 +1,68 @@
+* {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+}
+
+:root {
+    --black: #252525;
+    --white: #fffaf0;
+}
+
+.header {
+    position: relative;
+    right: 0;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2.5rem 9%;
+    background: rgba(105, 105, 105, 0.5);
+}
+
+.logo {
+    font-size: 2rem;
+}
+
+.navlist {
+    display: flex;
+}
+
+.navlist a {
+    color: var(--white);
+    margin-left: 5rem;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.rules {
+    display: flex;
+    align-items: center;
+}
+.rules a {
+    font-size: 5rem;
+}
+
+.game {
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 5rem;
+}
+
+#map {
+    height: 400px;
+    width: 400px;
+    border: solid var(--white) .2rem;
+    filter: grayscale(100%) invert(100%);
+
+}
+
+.boxes {
+    width: 50vh;
+}
