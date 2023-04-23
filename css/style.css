@@ -1,17 +1,21 @@
+/* variables */
+:root {
+    --black: #252525;
+    --white: #fffaf0;
+}
+
 * {
     padding: 0;
     margin: 0;
     list-style: none;
     text-decoration: none;
     font-family: 'Montserrat', sans-serif;
+    scroll-behavior: smooth;
 }
 
-:root {
-    --black: #252525;
-    --white: #fffaf0;
-}
 
-.header {
+/* header */
+.page-header {
     position: relative;
     right: 0;
     top: 0;
@@ -19,17 +23,22 @@
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
     padding: 2.5rem 9%;
     background: rgba(105, 105, 105, 0.5);
 }
 
+
 .logo {
     font-size: 2rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
 }
 
 .navlist {
     display: flex;
+    margin-left: 10rem;
 }
 
 .navlist a {
@@ -42,9 +51,21 @@
 .rules {
     display: flex;
     align-items: center;
+    justify-content: center;
 }
+
 .rules a {
-    font-size: 5rem;
+    font-size: 2rem;
+}
+
+/* main page */
+main {
+    padding: 1rem 2rem;
+}
+
+.container {
+    width: 100%;
+    position: relative;
 }
 
 .game {
@@ -56,13 +77,38 @@
 }
 
 #map {
-    height: 400px;
-    width: 400px;
-    border: solid var(--white) .2rem;
+    height: 50vh;
+    width: 100%;
     filter: grayscale(100%) invert(100%);
+    overflow: hidden;
+    border: solid var(--white) 2px;
 
 }
 
 .boxes {
-    width: 50vh;
+    width: 100%;
+    margin-left: 1rem;
+}
+
+.box {
+    padding: 1rem;
+    border: solid var(--black) 2px;
+}
+
+#map, .box {
+    border-radius: 6px;
+    box-shadow: rgba(0, 0, 0, 0.3) 3px 3px 10px;
+    margin-bottom: 1rem;
+}
+
+.box h2, .box p {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.box table {
+    width: 100%;
+    text-align: center;
 }
