@@ -14,6 +14,12 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // form for player name
 
 // function to fetch data from API
+async function fetchData(url) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Invalid server input!'); //if wrong data is sent there will be error message and it wont continue.
+    const data = await response.json();
+    return data;
+}
 
 // function to update game status
 
@@ -27,5 +33,22 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 // function to set up game
 // this is the main function that creates the game and calls the other functions
+async function gameSetup() {
+    try {
+        const gameData = await fetchData('testdata/testi.json');
+        console.log(gameData);
+
+        for (let airport of gameData.location) {
+            const marker = L.marker([airport.latitude, airport.longitude]).addTo(map)
+            .bindPopup('testi testes').openPopup();
+
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+gameSetup();
 
 // event listener to hide goal splash

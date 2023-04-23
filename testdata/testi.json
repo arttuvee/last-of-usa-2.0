@@ -1,0 +1,49 @@
+{
+  "status": {
+    "id": "8UdJb2gimIHPpkGaP6hT",
+    "name": "Test Player",
+    "co2": {
+      "consumed": 73,
+      "budget": 927
+    },
+    "previous_location": "EFHK"
+  },
+  "location": [
+    {
+      "ident": "KABQ",
+      "active": true,
+      "name": "Albuquerque International Sunport",
+      "latitude": 35.040199,
+      "longitude": -106.609001,
+      "weather": {
+        "main": "Clouds",
+        "description": "overcast clouds",
+        "icon": "https://openweathermap.org/img/wn/04n.png",
+        "temp": 9,
+        "humidity": 77,
+        "wind": {
+          "speed": 1.55,
+          "deg": 176
+        }
+      }
+    },
+    {
+      "ident": "KALN",
+      "active": true,
+      "name": "St Louis Regional Airport",
+      "latitude": 38.89030075069999,
+      "longitude": -90.0459976196,
+      "weather": {
+        "main": "Clouds",
+        "description": "overcast clouds",
+        "icon": "https://openweathermap.org/img/wn/04n.png",
+        "temp": 9,
+        "humidity": 77,
+        "wind": {
+          "speed": 1.55,
+          "deg": 176
+    }
+      }
+    }
+    ]
+  }
