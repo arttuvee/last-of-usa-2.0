@@ -4,7 +4,7 @@ import airport
 
 import mysql.connector
 from dotenv import load_dotenv
-from flask import Flask, request
+from flask import Flask, request, Response
 from flask_cors import CORS
 
 import config
@@ -22,6 +22,9 @@ config.conn = mysql.connector.connect(
          autocommit=True
          )
 
+# Instantiate the Airport class
+airport = Airport(ident="EFHK",name="Helsinki Vantaa Airport",latitude_deg=60.3172,longitude_deg=24.963301,type="lol", weather_description = "LOL", weather_degrees = "LOOOOOL")
+
 
 app = Flask(__name__)
 
@@ -38,9 +41,12 @@ def dbtest():
     return res
 
 @app.route("/airport")
-def airport():
-    result = dbtest()
-    return json.dumps(result)
+
+def get_all_airports():
+    result = airport.get_airports()
+    print(result)
+    json_data = json.dumps(result)
+    return Response(json_data, status=200, mimetype='application/json')
 
 
 if __name__ == '__main__':
