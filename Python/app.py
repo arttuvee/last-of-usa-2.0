@@ -11,6 +11,7 @@ import config
 
 # Retrieves .env file - Database connection information
 load_dotenv()
+
 # Database connection
 config.conn = mysql.connector.connect(
          host=os.environ.get('HOST'),

@@ -12,7 +12,7 @@ const apiUrl = 'http://127.0.0.1:3000/';
 
 // icons
 
-// form for player name
+// prompt for player name
 
 // function to fetch data from API
 async function fetchData(url) {
@@ -41,15 +41,15 @@ async function fetchData(url) {
 // this is the main function that creates the game and calls the other functions
 async function gameSetup() {
     try {
-        const gameData = await fetchData('testdata/testi.json');
+        // Fetches a list of airports from a url
+        const gameData = await fetchData('http://127.0.0.1:3000/airport');
         console.log(gameData);
 
+        // Iterates over the search result and adds a map-marker for them
         for (let airport of gameData.location) {
             const marker = L.marker([airport.latitude, airport.longitude]).addTo(map)
             .bindPopup('testi testes').openPopup();
-
         }
-
     } catch (error) {
         console.log(error);
     }
