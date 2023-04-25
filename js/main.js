@@ -8,6 +8,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
 
 // global variables
+const apiUrl = 'http://127.0.0.1:3000/';
 
 // icons
 
@@ -16,10 +17,15 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // function to fetch data from API
 async function fetchData(url) {
     const response = await fetch(url);
-    if (!response.ok) throw new Error('Invalid server input!'); //if wrong data is sent there will be error message and it wont continue.
+    console.log(response)
+
+    //if wrong data is sent there will be error message and it won't continue.
+    if (!response.ok) throw new Error('Invalid server input!');
     const data = await response.json();
     return data;
 }
+
+
 
 // function to update game status
 

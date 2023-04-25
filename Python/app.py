@@ -1,5 +1,6 @@
 import json
 import os
+import airport
 
 import mysql.connector
 from dotenv import load_dotenv
@@ -13,7 +14,7 @@ load_dotenv()
 # Database connection
 config.conn = mysql.connector.connect(
          host=os.environ.get('HOST'),
-         port= 3306,
+         port=3306,
          database=os.environ.get('DB_NAME'),
          user=os.environ.get('DB_USER'),
          password=os.environ.get('DB_PASS'),
