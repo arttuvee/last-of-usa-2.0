@@ -8,6 +8,8 @@ from flask import Flask, request, Response
 from flask_cors import CORS
 
 import config
+'from game import Game'
+from airport import Airport
 
 # Retrieves .env file - Database connection information
 load_dotenv()

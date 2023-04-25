@@ -36,6 +36,13 @@ async function fetchData(url) {
 // function to update goal data and goal table in UI
 
 // function to check if game is over
+function checkGameOver(range) {
+    if (range <= 0) {
+        alert(`You ran out of range Game Over. ${globalGoals.length} goals reached.`)
+        return false;
+    }
+    return true;
+}
 
 // function to set up game
 // this is the main function that creates the game and calls the other functions
