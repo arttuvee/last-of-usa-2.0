@@ -89,6 +89,12 @@ main {
     margin-top: 2rem;
 }
 
+.about {
+    height: 100vh;
+    justify-content: space-around;
+    margin-top: 2rem;
+}
+
 #map {
     height: 80vh;
     width: 100%;
