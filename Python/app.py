@@ -1,6 +1,6 @@
 import json
 import os
-import airport
+from start import Start
 
 import mysql.connector
 from dotenv import load_dotenv
@@ -30,6 +30,11 @@ airport = Airport(ident="EFHK",name="Helsinki Vantaa Airport",latitude_deg=60.31
 
 app = Flask(__name__)
 
+
+
+x = Start()
+
+
 @app.route("/")
 def hello():
     return "Hello, World!"
@@ -43,9 +48,8 @@ def dbtest():
     return res
 
 @app.route("/airport")
-
 def get_all_airports():
-    result = airport.get_airports()
+    result = x.get_airports()
     print(result)
     json_data = json.dumps(result)
     return Response(json_data, status=200, mimetype='application/json')
