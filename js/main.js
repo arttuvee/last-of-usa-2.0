@@ -13,6 +13,13 @@ const apiUrl = 'http://127.0.0.1:3000/';
 // icons
 
 // prompt for player name
+/*
+document.querySelector('player-form').addEventListener('submit', function(evt) {
+    evt.preventDefault();
+    const playerName = document.querySelector('#player-input').value;
+    document.querySelector('#player-modal').classList.add('hide');
+});
+*/
 
 // function to fetch data from API
 async function fetchData(url) {
@@ -28,6 +35,11 @@ async function fetchData(url) {
 
 
 // function to update game status
+function updateStatus(status) {
+  document.querySelector('#player-name').innerHTML = `Player: ${status.name}`;
+  document.querySelector('#days-left').innerHTML = config.days_left;
+  document.querySelector('#budget').innerHTML = config.max_distance;
+}
 
 // function to show weather at selected airport
 

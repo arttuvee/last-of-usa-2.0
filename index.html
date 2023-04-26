@@ -32,22 +32,56 @@
 <body>
 <div class="container">
     <header class="page-header">
-        <a href="#" class="logo">Last of USa</a>
+
 
         <ul class="navlist">
-            <li><a class="active" href="#">Game</a></li>
-            <li><a href="#">About</a></li>
+            <li><a class="active" href="index.html">Game</a></li>
+            <li class="logo-li"><img src="img/logo.png" alt="Last of USA" class="logo"></li>
+            <li><a href="about.html">About</a></li>
         </ul>
-        <div class="header-icon">
-            <a class="rules-icon" href="#">
-                <ion-icon name="help-circle-outline"></ion-icon>
-            </a>
-        </div>
     </header>
 
     <main class="game">
         <div id="map"></div>
         <div class="boxes">
+            <section class="box">
+                <table>
+                    <tr>
+                        <td colspan="2">
+                            <h2 id="player-name">Player Name</h2>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Range left: <span id="range-left">9999</span> km</td>
+                        <td>Time left: <span id="days-left">9999</span> days</td>
+                    </tr>
+                </table>
+            </section>
+            <section class="box">
+                <header>
+                    <h2>Resources</h2>
+                </header>
+                <table class="goal-table">
+                    <ul class="resource-list">
+                        <li>
+                            <ion-icon name="water-outline"></ion-icon>
+                            <p>Water</p>
+                        </li>
+                        <li>
+                            <ion-icon name="fast-food-outline"></ion-icon>
+                            <p>Nutrition</p>
+                        </li>
+                        <li>
+                            <ion-icon name="sunny-outline"></ion-icon>
+                            <p>Energy</br></p></li>
+                        <li>
+                            <ion-icon name="medkit-outline"></ion-icon>
+                            <p>Medicine</p>
+                        </li>
+                    </ul>
+
+                </table>
+            </section>
             <section class="box">
                 <header>
                     <h2>moro</h2>
@@ -63,13 +97,13 @@
             </section>
             <section class="box">
                 <header>
-                    <h2>moro</h2>
+                    <h2>How would you like to use your day?</h2>
                 </header>
                 <table>
-                    <ion-icon name="water-outline"></ion-icon>
-                    <ion-icon name="fast-food-outline"></ion-icon>
-                    <ion-icon name="sunny-outline"></ion-icon>
-                    <ion-icon name="medkit-outline"></ion-icon>
+                    <div class="buttons">
+                        <button type="button">moi</button>
+                        <button type="button">moi</button>
+                    </div>
                 </table>
             </section>
         </div>
@@ -77,7 +111,7 @@
     </main>
 
     <footer>
-
+        <h2> ryhmä 3</h2>
     </footer>
 
 </div>
@@ -88,6 +122,6 @@
         <input type="submit" value="Start game">
     </form>
 </div>
--->
+--->
 </body>
 </html> 
