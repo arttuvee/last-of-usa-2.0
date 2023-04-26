@@ -20,10 +20,6 @@
     <!---ionicons links--->
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js" defer></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js" defer></script>
-    <ion-icon name="water-outline"></ion-icon>
-    <ion-icon name="fast-food-outline"></ion-icon>
-    <ion-icon name="sunny-outline"></ion-icon>
-    <ion-icon name="medkit-outline"></ion-icon>
 
 
     <!---css link--->
@@ -39,11 +35,14 @@
         <a href="#" class="logo">Last of USa</a>
 
         <ul class="navlist">
-            <li><a class="button" href="#">Game</a></li>
-            <li><a class="button " href="#" >About</a></li>
-            <li><a class="rules" href="#"> <ion-icon name="help-circle-outline"></ion-icon></a></li>
+            <li><a class="active" href="#">Game</a></li>
+            <li><a href="#">About</a></li>
         </ul>
-
+        <div class="header-icon">
+            <a class="rules-icon" href="#">
+                <ion-icon name="help-circle-outline"></ion-icon>
+            </a>
+        </div>
     </header>
 
     <main class="game">
@@ -67,12 +66,10 @@
                     <h2>moro</h2>
                 </header>
                 <table>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto deserunt dignissimos, id
-                        iste
-                        nulla
-                        perferendis tenetur! Beatae, deleniti, possimus. Dolore dolores est laborum nemo ullam! Expedita
-                        nostrum
-                        praesentium tempore unde!</p>
+                    <ion-icon name="water-outline"></ion-icon>
+                    <ion-icon name="fast-food-outline"></ion-icon>
+                    <ion-icon name="sunny-outline"></ion-icon>
+                    <ion-icon name="medkit-outline"></ion-icon>
                 </table>
             </section>
         </div>
@@ -84,13 +81,13 @@
     </footer>
 
 </div>
-    <!---
-    <div id="player-modal">
-        <form id="player-form">
-            <input id="player-input" type="text" placeholder="Player name" required>
-            <input type="submit" value="Start game">
-        </form>
-    </div>
-    -->
+<!---
+<div id="player-modal">
+    <form id="player-form">
+        <input id="player-input" type="text" placeholder="Player name" required>
+        <input type="submit" value="Start game">
+    </form>
+</div>
+-->
 </body>
 </html> 

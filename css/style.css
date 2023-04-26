@@ -21,12 +21,14 @@
     top: 0;
     z-index: 1000;
     width: 100%;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    padding: 2.5rem 9%;
-    background: rgba(105, 105, 105, 0.5);
+    transition: all-ease;
+    background: rgba(37, 37, 37, 0.4);
 }
 
 
@@ -35,39 +37,40 @@
     font-weight: 800;
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 100%;
 }
 
 .navlist {
     display: flex;
+    align-items: center;
+    justify-content: space-around;
     width: 100%;
 }
 
+
 .navlist a {
     color: var(--white);
-    margin-left: 5rem;
     font-size: 1rem;
     font-weight: 700;
 }
 
-.rules {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+a .active {
+    color: darkgreen;
 }
 
-.rules a {
-    font-size: 5rem;
-}
 
 /* main page */
 main {
     padding: 1rem 2rem;
+
 }
 
 .container {
     width: 100%;
     position: relative;
+    background: rgb(255, 255, 255);
+    background: linear-gradient(239deg, rgba(255, 255, 255, 1) 0%, rgba(117, 117, 117, 1) 55%, rgba(20, 20, 20, 1) 100%);
 }
 
 .game {
@@ -116,21 +119,21 @@ main {
 }
 
 #player-modal {
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.8);
-  position: absolute;
-  top: 0;
-  z-index: 9999;
+    width: 100vh;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    top: 0;
+    z-index: 9999;
 }
 
 #player-form {
-  display: flex;
-  width: 50%;
-  margin: 4rem auto;
-  flex-direction: column;
+    display: flex;
+    width: 50%;
+    margin: 4rem auto;
+    flex-direction: column;
 }
 
 #player-form input {
-  padding: 1rem;
+    padding: 1rem;
 }
