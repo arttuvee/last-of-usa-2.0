@@ -46,6 +46,14 @@ def get_all_airports():
     json_data = json.dumps(result)
     return Response(json_data, status=200, mimetype='application/json')
 
+@app.route("/creategame")
+def get_start_airports():
+    result = x.create_game()
+    print(result)
+    json_data = json.dumps(result)
+    return Response(json_data, status=200, mimetype='application/json')
+
+
 
 if __name__ == '__main__':
     app.run(use_reloader=True, host='127.0.0.1', port=3000)
