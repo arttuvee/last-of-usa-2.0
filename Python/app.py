@@ -9,7 +9,6 @@ from flask_cors import CORS
 
 import config
 'from game import Game'
-from airport import Airport
 
 # Retrieves .env file - Database connection information
 load_dotenv()
@@ -36,7 +35,6 @@ x = Start()
 @app.route("/")
 def hello():
     return "Hello, World!"
-
 
 
 @app.route("/airport")
