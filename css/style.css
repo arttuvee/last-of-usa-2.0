@@ -1,7 +1,9 @@
 /* variables */
 :root {
     --black: #252525;
-    --white: #fffaf0;
+    --white: #d2d2d2;
+    --red: rgba(255, 0, 0, 0.7);
+    --glow: #8a7f7f;
 }
 
 * {
@@ -25,11 +27,12 @@
     padding-bottom: 1rem;
     display: flex;
     flex-wrap: wrap;
-    justify-content: right;
     align-items: center;
     transition: all-ease;
     background: rgba(37, 37, 37, 0.4);
     justify-content: center;
+    border-bottom: solid .25rem var(--black);
+    box-shadow: rgba(0, 0, 0, 0.3) 3px 3px 10px;
 }
 
 .header-icon {
@@ -40,7 +43,6 @@
 .logo {
     width: 30%;
     display: flex;
-
 }
 
 .logo-li {
@@ -52,7 +54,7 @@
 .navlist {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
     width: 100%;
 }
 
@@ -61,16 +63,30 @@
     color: var(--white);
     font-size: 1rem;
     font-weight: 700;
+    margin: 0 2rem;
 }
 
-a .active {
-    color: darkgreen;
+li a {
+    background-image: linear-gradient(to right, #D31027 0%, var(--red) 51%, #D31027 100%);
+    padding: 1rem;
+    border-radius: 20%;
+    box-shadow: rgba(0, 0, 0, 0.3) 3px 3px 10px;
 }
 
+li a:hover {
+    background: var(--white);
+    color: var(--red);
+    box-shadow: rgba(0, 0, 0, 0.3) 3px 3px 10px;
+}
+
+li .active {
+    background: var(--white);
+    color: var(--red);
+}
 
 /* main page */
 main {
-    padding: 1rem 2rem;
+    padding: 0 2rem;
 
 }
 
@@ -78,7 +94,9 @@ main {
     width: 100%;
     position: relative;
     background: rgb(255, 255, 255);
-    background: linear-gradient(239deg, rgba(255, 255, 255, 1) 0%, rgba(117, 117, 117, 1) 55%, rgba(20, 20, 20, 1) 100%);
+    /*background: linear-gradient(239deg, rgba(255, 255, 255, 1) 0%, rgba(117, 117, 117, 1) 55%, rgba(20, 20, 20, 1) 100%);*/
+    background: url("/img/bg.jpg") no-repeat center center fixed;
+    background-size: cover;
 }
 
 .game {
@@ -86,13 +104,46 @@ main {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .about {
     height: 100vh;
-    justify-content: space-around;
-    margin-top: 2rem;
+    display: flex;
+    justify-content: space-evenly;
+    line-height: 2rem;
+    align-content: center;
+    color: var(--white);
+}
+
+.about .info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-right: 1rem;
+}
+
+.about .rules {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-left: 1rem;
+
+}
+
+.about div h2 {
+    margin-bottom: 2rem;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.about ul {
+    display: flex;
+    flex-direction: column;
 }
 
 #map {
@@ -112,11 +163,13 @@ main {
 .box {
     padding: 1rem;
     border: solid var(--black) 2px;
+    background-color: rgba(37, 37, 37, 0.55);
+
 }
 
 #map, .box {
     border-radius: 6px;
-    box-shadow: rgba(0, 0, 0, 0.3) 3px 3px 10px;
+    box-shadow: var(--glow) 1px 1px 5px;
     margin-bottom: 1rem;
 }
 
@@ -125,6 +178,7 @@ main {
     padding: 0;
     display: flex;
     justify-content: center;
+    color: var(--white);
 }
 
 .box h2 {
@@ -134,6 +188,17 @@ main {
 .box table {
     width: 100%;
     text-align: center;
+}
+
+td {
+    color: var(--white);
+}
+
+span {
+    color: var(--red);
+    font-size: 20px;
+    font-weight: 500;
+    border-bottom: .2rem solid var(--red);
 }
 
 .player-info {
@@ -171,10 +236,49 @@ main {
 .resource-list li {
     font-size: 40px;
 }
+
 .resource-list p {
     font-size: 20px;
 }
 
+ion-icon {
+    color: var(--black);
+    background: rgba(255, 255, 255, 0.5);
+    padding: .5rem;
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.3) 3px 3px 10px;
+}
+
 .buttons {
     display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+button {
+    padding: .75rem 3rem;
+    font-size: 20px;
+    font-weight: 500;
+    background-image: linear-gradient(to right, #D31027 0%, var(--red) 51%, #D31027 100%);
+    color: var(--white);
+    box-shadow: rgba(0, 0, 0, 0.3) 3px 3px 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    padding: .75rem 3rem;
+    font-size: 20px;
+    font-weight: 500;
+    background: var(--white);
+    color: var(--red);
+    box-shadow: rgba(0, 0, 0, 0.3) 3px 3px 10px;
+}
+
+footer {
+    background: rgba(37, 37, 37, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: solid .25rem var(--black);
+    padding: 3rem 0;
 }

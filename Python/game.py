@@ -1,1 +1,7 @@
-from Python import config
+
+import config
+
+
+class Game:
+    pass
+

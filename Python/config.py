@@ -1,5 +1,4 @@
 # Game parameters
-max_distance = 20000
 
 water = 0
 food = 0

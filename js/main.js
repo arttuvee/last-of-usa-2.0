@@ -12,6 +12,7 @@ const apiUrl = 'http://127.0.0.1:3000/';
 
 // icons
 
+
 // prompt for player name
 /*
 document.querySelector('player-form').addEventListener('submit', function(evt) {
@@ -35,11 +36,6 @@ async function fetchData(url) {
 
 
 // function to update game status
-function updateStatus(status) {
-  document.querySelector('#player-name').innerHTML = `Player: ${status.name}`;
-  document.querySelector('#days-left').innerHTML = config.days_left;
-  document.querySelector('#budget').innerHTML = config.max_distance;
-}
 
 // function to show weather at selected airport
 
@@ -56,25 +52,41 @@ function checkGameOver(range) {
     return true;
 }
 
+function updateStatus(status) {
+  document.querySelector('#player-name').innerHTML = `Player: ${status.name}`;
+  document.querySelector('#player-location').innerHTML = status.location;
+}
+
+
 // function to set up game
 // this is the main function that creates the game and calls the other functions
 async function gameSetup() {
     try {
         // Fetches a list of airports from a url
-        const gameData = await fetchData('http://127.0.0.1:3000/airport');
-        console.log(gameData);
+        const airportData = await fetchData('http://127.0.0.1:3000/airport');
+        console.log(airportData);
 
         // Iterates over the search result and adds a map-marker for them
-        for (let airport of gameData.location) {
-            const marker = L.marker([airport.latitude, airport.longitude]).addTo(map)
-            .bindPopup('testi testes').openPopup();
+        for (let airport of airportData) {
+            const marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map)
+            .bindPopup(airport.name);
         }
+        const gameData = await fetchData('http://127.0.0.1:3000/creategame');
+        console.log(gameData);
+                    const marker = L.marker([gameData.airport_data.latitude_deg, gameData.airport_data.longitude_deg]).addTo(map)
+                    .bindPopup(`<b>This is the starting airport</b> <br>${gameData.airport_data.name}`)
+                    .openPopup();
+        updateStatus(gameData.status);
     } catch (error) {
         console.log(error);
     }
 }
 
+
+
 gameSetup();
+
+
 
 // event listener to hide goal splash
 
