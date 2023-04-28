@@ -6,6 +6,7 @@ medicine = 0
 solar = 0
 p_day = 1
 days_left = 10
+battery = 5000
 
 default_starting_point = "KFJK"
 default_name = "Anna"
