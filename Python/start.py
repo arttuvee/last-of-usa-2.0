@@ -65,6 +65,5 @@ class Start:
         cursor.execute(sql2, (self.status["id"], self.status["location"], self.status["battery"], self.status["name"]))
         config.conn.commit()
         print(self.status)
-        print(self.status)
 
         return response_dict
