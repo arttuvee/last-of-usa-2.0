@@ -55,8 +55,15 @@ class Start:
             "battery": config.battery,
             "name": config.default_name
         }
-
-        response_dict = {"airport_data": airport_data, "status": self.status}
+        sql3 = """SELECT name, ident, latitude_deg, longitude_deg, type FROM airport
+                       WHERE ident = "KLAX" or ident = "KJFK" or ident = "KAUS" or ident = "KMSP" or ident = "KSEA" or ident = "KABQ" or ident = "KALN" or 
+                       ident = "KBIL" or ident = "KBIS" or ident = "KCHO" or ident = "KCSG" or ident = "KGRI" or
+                       ident = "KLCH" or ident = "KPTK" or ident = "KPVU";"""
+        cursor = config.conn.cursor(dictionary=True)
+        cursor.execute(sql3)
+        result = cursor.fetchall()
+        all_airports = result
+        response_dict = {"all_airports_data": all_airports, "start_airport_data": start_airport_data, "status": self.status}
 
         sql2 = "INSERT INTO Game (id, location, player_range, screen_name) VALUES (%s, %s, %s, %s)"
         cursor = config.conn.cursor()
