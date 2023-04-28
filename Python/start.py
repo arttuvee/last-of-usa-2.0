@@ -2,8 +2,6 @@ import config
 import string,random
 
 
-
-
 class Start:
     def __init__(self):
         self.all_airports = self.get_airports()
@@ -46,14 +44,14 @@ class Start:
         cursor = config.conn.cursor(dictionary=True)
         cursor.execute(sql1)
         result = cursor.fetchone()
-        airport_data = result
-        location_name = airport_data["name"]
+        start_airport_data = result
+        location_name = start_airport_data["name"]
         # Inserts the values to the new game session
         self.status = {
             "id": ''.join(str(random.randint(0, 9)) for i in range(5)),
             "location": location_name,
-            "latitude_deg": airport_data["latitude_deg"],  # Add latitude_deg to the status dictionary
-            "longitude_deg": airport_data["longitude_deg"],  # Add longitude_deg to the status dictionary
+            "latitude_deg": start_airport_data["latitude_deg"],  # Add latitude_deg to the status dictionary
+            "longitude_deg": start_airport_data["longitude_deg"],  # Add longitude_deg to the status dictionary
             "battery": config.battery,
             "name": config.default_name
         }
