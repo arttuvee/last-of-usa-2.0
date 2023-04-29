@@ -2,8 +2,11 @@ import config
 import requests
 import random
 
+
 class Start:
-    def __init__(self):
+    def __init__(self, player_name):
+        # Bring the player name over from the url
+        self.player_name = player_name
         self.all_airports = self.get_airports()
         self.start_airport = self.get_starting_airport()
         self.final_airport = self.get_final_airport()
@@ -50,6 +53,9 @@ class Start:
     # Function that starts the game and prepares the database
     def create_game(self):
 
+        # Update config name to the name from url
+        config.player_name = self.player_name
+
         # Get a random airport from the US to use as a starting airport
         start_airport_data = self.get_starting_airport()
 
@@ -57,7 +63,7 @@ class Start:
         self.status = {
             "id": '',
             "location": start_airport_data["name"],
-            "player_name": config.default_name,
+            "player_name": config.player_name,
             "latitude_deg": start_airport_data["latitude_deg"],  # Add latitude_deg to the status dictionary
             "longitude_deg": start_airport_data["longitude_deg"],  # Add longitude_deg to the status dictionary
             "food_collected": config.food,
@@ -74,6 +80,7 @@ class Start:
         cursor.execute(sql2, (self.status["location"], self.status["battery_range"], self.status["player_name"]))
         config.conn.commit()
 
+        # Generate new id for the game
         game_id = cursor.lastrowid
         self.status['id'] = game_id
 

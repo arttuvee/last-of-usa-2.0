@@ -27,26 +27,26 @@ app = Flask(__name__)
 CORS(app)
 
 
-Start = Start()
-
-
-@app.route("/")
-def hello():
-    return "Hello, World!"
-
-
 @app.route("/airport")
 def get_all_airports():
-    result = Start.get_airports()
+    result = Start.get_airports(None)
     json_data = json.dumps(result)
     return Response(json_data, status=200, mimetype='application/json')
 
 
 @app.route("/creategame")
 def get_start_airports():
-    result = Start.create_game()
-    json_data = json.dumps(result)
-    return Response(json_data, status=200, mimetype='application/json')
+
+    # Extracting the player name from the url ...?name=""
+    args = request.args
+    player_name_from_url = args.get("name")
+
+    if player_name_from_url is not None:
+        result = Start(player_name_from_url).create_game()
+        json_data = json.dumps(result)
+        return Response(json_data, status=200, mimetype='application/json')
+    else:
+        return "No player name provided"
 
 
 if __name__ == '__main__':

@@ -13,7 +13,10 @@
     font-family: 'Montserrat', sans-serif;
     scroll-behavior: smooth;
 }
-
+/* This is for the form to disappear*/
+.hide {
+    display: none;
+}
 
 /* header */
 .page-header {

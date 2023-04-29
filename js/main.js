@@ -13,14 +13,15 @@ const apiUrl = 'http://127.0.0.1:3000/';
 // icons
 
 
-// prompt for player name
-/*
-document.querySelector('player-form').addEventListener('submit', function(evt) {
+// form for player name - Asks for player name and after submit disappears
+document.querySelector('#player-form').addEventListener('submit', function(evt) {
     evt.preventDefault();
     const playerName = document.querySelector('#player-input').value;
     document.querySelector('#player-modal').classList.add('hide');
+
+    // pass the player name from the form to the url
+    gameSetup(`http://127.0.0.1:3000/creategame?name=${playerName}`);
 });
-*/
 
 // function to fetch data from API
 async function fetchData(url) {
@@ -29,8 +30,7 @@ async function fetchData(url) {
 
     //if wrong data is sent there will be error message and it won't continue.
     if (!response.ok) throw new Error('Invalid server input!');
-    const data = await response.json();
-    return data;
+  return await response.json();
 }
 
 
@@ -72,15 +72,13 @@ function updateStatus(status) {
   if (status.medicine_collected === 1) {
   document.querySelector('#medkit-outline').classList.add('config-1');
 }
-
-
-
 }
 
 
 // Function to set up game - this is the main function that creates the game and calls the other functions
-async function gameSetup() {
+async function gameSetup(url) {
     try {
+
         // Fetches a list of airports from an url
         const airportData = await fetchData('http://127.0.0.1:3000/airport');
         console.log(`This is all the airportData: ${airportData}`);
@@ -91,7 +89,7 @@ async function gameSetup() {
         }
 
         // Fetches a JSON that has all the data for a new game
-        const gameData = await fetchData('http://127.0.0.1:3000/creategame');
+        const gameData = await fetchData(url);
         console.log(`This is all the gameData ${gameData}`);
                     const marker = L.marker([gameData.start_airport_data.latitude_deg, gameData.start_airport_data.longitude_deg]).addTo(map)
                     .bindPopup(`<b>This is the starting airport</b> <br>${gameData.start_airport_data.name}`).openPopup();
@@ -104,6 +102,5 @@ async function gameSetup() {
     }
 }
 
-gameSetup();
 
 
