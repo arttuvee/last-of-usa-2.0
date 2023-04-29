@@ -250,6 +250,17 @@ ion-icon {
     box-shadow: rgba(0, 0, 0, 0.3) 3px 3px 10px;
 }
 
+/* These are for updating the icons to green if player finds them. */
+.medicine-icon, .water-icon, .fast-food-icon, .sunny-icon {
+  /* default styles */
+}
+
+/* styles for config.medicine = 1 */
+.config-1 {
+  color: green;
+}
+
+
 .buttons {
     display: flex;
     justify-content: space-around;

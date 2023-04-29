@@ -1,10 +1,10 @@
 # Game parameters
 
 water = 0
-food = 0
+food = 1
 medicine = 0
-solar = 0
-p_day = 1
+solar = 1
+
 days_left = 10
 battery = 300
 

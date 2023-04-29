@@ -1,15 +1,15 @@
 import config
 import requests
-import json
+import random
 
 class Start:
     def __init__(self):
         self.all_airports = self.get_airports()
-        self.start_airport = self.starting_airport()
-        self.final_airport = self.final_airport()
+        self.start_airport = self.get_starting_airport()
+        self.final_airport = self.get_final_airport()
 
     # Query to get starting airport
-    def starting_airport(self):
+    def get_starting_airport(self):
         sql = ' select name, ident, latitude_deg, longitude_deg from airport where iso_country = "US" and type = "small_airport" and longitude_deg > -125 order by rand() limit 1;'
         cursor = config.conn.cursor(dictionary=True)
         cursor.execute(sql)
@@ -28,7 +28,7 @@ class Start:
         return res
 
     # Query to get final airport #TODO
-    def final_airport(self):
+    def get_final_airport(self):
         sql = "SELECT ident FROM airport WHERE name = 'Key West International Airport'"
         cursor = config.conn.cursor()
         cursor.execute(sql)
@@ -38,14 +38,20 @@ class Start:
     # Get goals from API - The response is a list of 15 random numbers (0-5), These numbers act as goals.
     def get_random_goals_from_API(self):
         request = "https://www.randomnumberapi.com/api/v1.0/random?min=0&max=5&count=15"
-        list_of_random_goal_numbers = requests.get(request).json()
+        try:
+            list_of_random_goal_numbers = requests.get(request).json()
+        except Exception as e:
+            print(f"Error occurred while requesting random goals from API: {e}")
+
+            # If there is an error with the API - manually generate equivalent goal list
+            list_of_random_goal_numbers = [random.randint(0, 5) for i in range(15)]
         return list_of_random_goal_numbers
 
     # Function that starts the game and prepares the database
     def create_game(self):
 
         # Get a random airport from the US to use as a starting airport
-        start_airport_data = self.starting_airport()
+        start_airport_data = self.get_starting_airport()
 
         # Make a new game session and insert values into status.
         self.status = {
@@ -95,4 +101,3 @@ class Start:
                                 "goal_at_airport": goal_at_airport,
                                 "status": self.status}
         return all_create_game_data
-

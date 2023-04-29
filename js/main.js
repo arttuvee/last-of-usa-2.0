@@ -58,6 +58,23 @@ function updateStatus(status) {
   document.querySelector('#player-location').innerHTML = status.location;
   document.querySelector('#range-left').innerHTML = status.battery_range;
   document.querySelector('#days-left').innerHTML = status.days_left;
+
+  // Update recourse icon colours if player finds them. Gets the data from same 'status'
+  if (status.water_collected === 1) {
+  document.querySelector('#water-outline').classList.add('config-1');
+}
+  if (status.food_collected === 1) {
+  document.querySelector('#fast-food-outline').classList.add('config-1');
+}
+  if (status.solar_collected === 1) {
+  document.querySelector('#sunny-outline').classList.add('config-1');
+}
+  if (status.medicine_collected === 1) {
+  document.querySelector('#medkit-outline').classList.add('config-1');
+}
+
+
+
 }
 
 
@@ -88,6 +105,5 @@ async function gameSetup() {
 }
 
 gameSetup();
-
 
 
