@@ -152,11 +152,33 @@ main {
 #map {
     height: 80vh;
     width: 100%;
-    filter: grayscale(100%) invert(100%);
     overflow: hidden;
-    border: solid var(--white) 2px;
 
 }
+/* Set the grayscale filter for the map tiles */
+.leaflet-tile {
+  filter: grayscale(100%) invert(100%);
+    border: solid var(--white) 0.5px;
+}
+
+/* Leaflet icon styles */
+.blue-icon{
+    filter: none;
+    background-color: #2474ff;
+    border-radius: 50%;
+    border: 5px solid rgba(255, 255, 255, 0.5);
+}
+.green-icon{
+    filter: none;
+    background-color: #589b5a;
+    border-radius: 50%;
+    border: 5px solid rgba(255, 255, 255, 0.5);
+}
+.not-in-range-icon{
+    filter: none;
+    background-color: #837676;
+}
+
 
 .boxes {
     width: 100%;

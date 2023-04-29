@@ -11,7 +11,9 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 const apiUrl = 'http://127.0.0.1:3000/';
 
 // icons
-
+const blueIcon = L.divIcon({className:'blue-icon'});
+const greenIcon = L.divIcon({className:'green-icon'});
+const not_in_range_Icon = L.divIcon({className:'not-in-range-icon'});
 
 // form for player name - Asks for player name and after submit disappears
 document.querySelector('#player-form').addEventListener('submit', function(evt) {
@@ -79,20 +81,52 @@ function updateStatus(status) {
 async function gameSetup(url) {
     try {
 
-        // Fetches a list of airports from an url
-        const airportData = await fetchData('http://127.0.0.1:3000/airport');
-        console.log(`This is all the airportData: ${airportData}`);
-
-        // Iterates over the search result and adds a map-marker for them
-        for (let airport of airportData) {
-            const marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map).bindPopup(airport.name);
-        }
-
         // Fetches a JSON that has all the data for a new game
         const gameData = await fetchData(url);
+
+        // Adds all airports to the map first
+        for (let i = 0; i < gameData.all_airports_data.length; i++) {
+
+          // This how to access one specific airport from the dataset
+          let airport = gameData.all_airports_data[i];
+
+          // Add a map marker for a specific airport
+          const airport_marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map);
+          airport_marker.setIcon(greenIcon);
+
+          // Make a div for where all popup content is stored
+          const popupContent = document.createElement('div')
+          const h4 = document.createElement('h4')
+          h4.innerHTML = airport.name
+          popupContent.append(h4)
+
+          // Add 'Fly here' button to popup content
+          const goButton = document.createElement('button')
+          goButton.classList.add('button')
+          goButton.innerHTML = 'Fly here'
+          popupContent.append(goButton)
+
+          // Add text content to popup content
+          const p = document.createElement('p')
+          p.innerHTML = `distance is x km`
+          popupContent.append(p)
+
+          airport_marker.bindPopup(popupContent)
+
+
+
+
+
+
+        }
+
+        // Adds a marker for the starting airport
         console.log(`This is all the gameData ${gameData}`);
-                    const marker = L.marker([gameData.start_airport_data.latitude_deg, gameData.start_airport_data.longitude_deg]).addTo(map)
-                    .bindPopup(`<b>This is the starting airport</b> <br>${gameData.start_airport_data.name}`).openPopup();
+        const current_location_marker = L.marker([gameData.start_airport_data.latitude_deg, gameData.start_airport_data.longitude_deg]).addTo(map)
+        .bindPopup(`<b>This is the starting airport</b> <br>${gameData.start_airport_data.name}`).openPopup();
+
+          // Set current location icon to blue
+          current_location_marker.setIcon(blueIcon)
 
         // Send gameData to updateStatus function
         updateStatus(gameData.status);
