@@ -53,41 +53,41 @@ function checkGameOver(range) {
 }
 
 function updateStatus(status) {
-  document.querySelector('#player-name').innerHTML = `Player: ${status.name}`;
+    // Insert player name and range to the HTML-page. Source for information is the 'status' part of the JSON
+  document.querySelector('#player-name').innerHTML = `Player: ${status.player_name}`;
   document.querySelector('#player-location').innerHTML = status.location;
+  document.querySelector('#range-left').innerHTML = status.battery_range;
+  document.querySelector('#days-left').innerHTML = status.days_left;
 }
 
 
-// function to set up game
-// this is the main function that creates the game and calls the other functions
+// Function to set up game - this is the main function that creates the game and calls the other functions
 async function gameSetup() {
     try {
-        // Fetches a list of airports from a url
+        // Fetches a list of airports from an url
         const airportData = await fetchData('http://127.0.0.1:3000/airport');
-        console.log(airportData);
+        console.log(`This is all the airportData: ${airportData}`);
 
         // Iterates over the search result and adds a map-marker for them
         for (let airport of airportData) {
-            const marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map)
-            .bindPopup(airport.name);
+            const marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map).bindPopup(airport.name);
         }
+
+        // Fetches a JSON that has all the data for a new game
         const gameData = await fetchData('http://127.0.0.1:3000/creategame');
-        console.log(gameData);
-                    const marker = L.marker([gameData.airport_data.latitude_deg, gameData.airport_data.longitude_deg]).addTo(map)
-                    .bindPopup(`<b>This is the starting airport</b> <br>${gameData.airport_data.name}`)
-                    .openPopup();
+        console.log(`This is all the gameData ${gameData}`);
+                    const marker = L.marker([gameData.start_airport_data.latitude_deg, gameData.start_airport_data.longitude_deg]).addTo(map)
+                    .bindPopup(`<b>This is the starting airport</b> <br>${gameData.start_airport_data.name}`).openPopup();
+
+        // Send gameData to updateStatus function
         updateStatus(gameData.status);
+
     } catch (error) {
-        console.log(error);
+        console.log(`this is gameSetup catch block error: ${error}`);
     }
 }
 
-
-
 gameSetup();
 
-
-
-// event listener to hide goal splash
 
 

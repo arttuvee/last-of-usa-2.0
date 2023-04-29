@@ -8,7 +8,6 @@ from flask import Flask, request, Response
 from flask_cors import CORS
 
 import config
-'from game import Game'
 
 # Retrieves .env file - Database connection information
 load_dotenv()
@@ -26,7 +25,6 @@ config.conn = mysql.connector.connect(
 
 app = Flask(__name__)
 CORS(app)
-
 
 
 x = Start()
@@ -50,7 +48,6 @@ def get_start_airports():
     print(result)
     json_data = json.dumps(result)
     return Response(json_data, status=200, mimetype='application/json')
-
 
 
 if __name__ == '__main__':
