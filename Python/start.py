@@ -1,6 +1,6 @@
 import config
-import string,random
-
+import requests
+import json
 
 class Start:
     def __init__(self):
@@ -8,6 +8,7 @@ class Start:
         self.start_airport = self.starting_airport()
         self.final_airport = self.final_airport()
 
+    # Query to get starting airport
     def starting_airport(self):
         sql = ' select name, ident, latitude_deg, longitude_deg from airport where iso_country = "US" and type = "small_airport" and longitude_deg > -125 order by rand() limit 1;'
         cursor = config.conn.cursor(dictionary=True)
@@ -15,6 +16,7 @@ class Start:
         result = cursor.fetchone()
         return result
 
+    # Query to get all airports
     def get_airports(self):
         sql = """SELECT name, ident, latitude_deg, longitude_deg, type FROM airport
                        WHERE ident = "KLAX" or ident = "KJFK" or ident = "KAUS" or ident = "KMSP" or ident = "KSEA" or ident = "KABQ" or ident = "KALN" or 
@@ -25,6 +27,7 @@ class Start:
         res = cur.fetchall()
         return res
 
+    # Query to get final airport #TODO
     def final_airport(self):
         sql = "SELECT ident FROM airport WHERE name = 'Key West International Airport'"
         cursor = config.conn.cursor()
@@ -32,24 +35,21 @@ class Start:
         result = cursor.fetchall()
         return result
 
-    def get_goals(self):
-        sql = "SELECT * from goal;"
-        cursor = config.conn.cursor()
-        cursor.execute(sql)
-        result = cursor.fetchall()
-        return result
+    # Get goals from API - The response is a list of 15 random numbers (0-5), These numbers act as goals.
+    def get_random_goals_from_API(self):
+        request = "https://www.randomnumberapi.com/api/v1.0/random?min=0&max=5&count=15"
+        list_of_random_goal_numbers = requests.get(request).json()
+        return list_of_random_goal_numbers
 
     # Function that starts the game and prepares the database
     def create_game(self):
+
         # Get a random airport from the US to use as a starting airport
-        sql1 = ' select name, ident, latitude_deg, longitude_deg from airport where iso_country = "US" and type = "small_airport" and longitude_deg > -125 order by rand() limit 1;'
-        cursor = config.conn.cursor(dictionary=True)
-        cursor.execute(sql1)
-        start_airport_data = cursor.fetchone()
+        start_airport_data = self.starting_airport()
 
         # Make a new game session and insert values into status.
         self.status = {
-            "id": ''.join(str(random.randint(0, 9)) for i in range(5)),
+            "id": '',
             "location": start_airport_data["name"],
             "player_name": config.default_name,
             "latitude_deg": start_airport_data["latitude_deg"],  # Add latitude_deg to the status dictionary
@@ -62,24 +62,37 @@ class Start:
             "days_left": config.days_left
         }
 
-        # Query for all airports that the game uses.
-        sql3 = """SELECT name, ident, latitude_deg, longitude_deg, type FROM airport
-                       WHERE ident = "KLAX" or ident = "KJFK" or ident = "KAUS" or ident = "KMSP" or ident = "KSEA" or ident = "KABQ" or ident = "KALN" or 
-                       ident = "KBIL" or ident = "KBIS" or ident = "KCHO" or ident = "KCSG" or ident = "KGRI" or
-                       ident = "KLCH" or ident = "KPTK" or ident = "KPVU";"""
-        cursor = config.conn.cursor(dictionary=True)
-        cursor.execute(sql3)
-        result = cursor.fetchall()
-        all_airports = result
-
-        # Format data to dictionary
-        response_dict = {"all_airports_data": all_airports, "start_airport_data": start_airport_data, "status": self.status}
-
         # Insert the newly created game into the database
-        sql2 = "INSERT INTO Game (id, location, player_range, screen_name) VALUES (%s, %s, %s, %s)"
+        sql2 = "INSERT INTO Game (location, player_range, screen_name) VALUES (%s, %s, %s)"
         cursor = config.conn.cursor()
-        cursor.execute(sql2, (self.status["id"], self.status["location"], self.status["battery_range"], self.status["player_name"]))
+        cursor.execute(sql2, (self.status["location"], self.status["battery_range"], self.status["player_name"]))
         config.conn.commit()
-        print(f"this is self.status values: {self.status}")
 
-        return response_dict
+        game_id = cursor.lastrowid
+        self.status['id'] = game_id
+
+        # KUN SELAAT DB -PORTS TAULUKKOA, SARAKE "ID" EI TOIMI. VERTAILE PORTS JA GAME TAULUN SARAKKEITA!
+        # KUN SELAAT DB -PORTS TAULUKKOA, SARAKE "ID" EI TOIMI. VERTAILE PORTS JA GAME TAULUN SARAKKEITA!
+
+        # Get random goals from API and insert them into Ports -table for the same game.
+        goal_list = self.get_random_goals_from_API()
+        goal_at_airport = []
+
+        for i, goal_id in enumerate(goal_list):
+
+            # Update the database by iterating over goal_list and add a goal in order
+            sql = "INSERT INTO ports (game, airport, goal) VALUES (%s, %s, %s);"
+            cursor = config.conn.cursor(dictionary=True)
+            cursor.execute(sql, (game_id, self.all_airports[i]['ident'], goal_id))
+
+            # This is the exact same goal data as in database but so we can see it in /create_game JSON
+            airport_with_goal = {self.all_airports[i]['name']: goal_id}
+            goal_at_airport.append(airport_with_goal)
+
+        # Format all create_game data to dictionary.
+        all_create_game_data = {"all_airports_data": self.all_airports,
+                                "start_airport_data": start_airport_data,
+                                "goal_at_airport": goal_at_airport,
+                                "status": self.status}
+        return all_create_game_data
+

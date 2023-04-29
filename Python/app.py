@@ -27,7 +27,7 @@ app = Flask(__name__)
 CORS(app)
 
 
-x = Start()
+Start = Start()
 
 
 @app.route("/")
@@ -37,15 +37,14 @@ def hello():
 
 @app.route("/airport")
 def get_all_airports():
-    result = x.get_airports()
-    print(result)
+    result = Start.get_airports()
     json_data = json.dumps(result)
     return Response(json_data, status=200, mimetype='application/json')
 
+
 @app.route("/creategame")
 def get_start_airports():
-    result = x.create_game()
-    print(result)
+    result = Start.create_game()
     json_data = json.dumps(result)
     return Response(json_data, status=200, mimetype='application/json')
 
