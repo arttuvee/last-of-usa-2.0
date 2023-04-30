@@ -4,9 +4,7 @@ import random
 
 
 class Start:
-    def __init__(self, player_name):
-        # Bring the player name over from the url
-        self.player_name = player_name
+    def __init__(self):
         self.all_airports = self.get_airports()
         self.start_airport = self.get_starting_airport()
         self.final_airport = self.get_final_airport()
@@ -51,7 +49,10 @@ class Start:
         return list_of_random_goal_numbers
 
     # Function that starts the game and prepares the database
-    def create_game(self):
+    def create_game(self, player_name):
+
+        # Bring the player name over from the url
+        self.player_name = player_name
 
         # Update config name to the name from url
         config.player_name = self.player_name

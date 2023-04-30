@@ -6,7 +6,7 @@ medicine = 0
 solar = 1
 
 days_left = 10
-battery = 300
+battery = 30000
 
 default_starting_point = "KFJK"
 player_name = "ports testi"

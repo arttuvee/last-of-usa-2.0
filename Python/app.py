@@ -26,10 +26,11 @@ config.conn = mysql.connector.connect(
 app = Flask(__name__)
 CORS(app)
 
+start = Start()
 
 @app.route("/airport")
 def get_all_airports():
-    result = Start.get_airports(None)
+    result = start.get_airports()
     json_data = json.dumps(result)
     return Response(json_data, status=200, mimetype='application/json')
 
@@ -42,7 +43,7 @@ def get_start_airports():
     player_name_from_url = args.get("name")
 
     if player_name_from_url is not None:
-        result = Start(player_name_from_url).create_game()
+        result = start.create_game(player_name_from_url)
         json_data = json.dumps(result)
         return Response(json_data, status=200, mimetype='application/json')
     else:
