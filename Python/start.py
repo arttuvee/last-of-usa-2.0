@@ -64,21 +64,16 @@ class Start:
         self.status = {
             "id": '',
             "location": start_airport_data["name"],
+            "ident": start_airport_data['ident'],
             "player_name": config.player_name,
             "latitude_deg": start_airport_data["latitude_deg"],  # Add latitude_deg to the status dictionary
             "longitude_deg": start_airport_data["longitude_deg"],  # Add longitude_deg to the status dictionary
-            "food_collected": config.food,
-            "water_collected": config.water,
-            "solar_collected": config.solar,
-            "medicine_collected": config.medicine,
-            "battery_range": config.battery,
-            "days_left": config.days_left
         }
 
         # Insert the newly created game into the database
         sql2 = "INSERT INTO Game (location, player_range, screen_name) VALUES (%s, %s, %s)"
         cursor = config.conn.cursor()
-        cursor.execute(sql2, (self.status["location"], self.status["battery_range"], self.status["player_name"]))
+        cursor.execute(sql2, (self.status["ident"], config.battery, self.status["player_name"]))
         config.conn.commit()
 
         # Generate new id for the game
@@ -90,8 +85,6 @@ class Start:
 
         # Get random goals from API and insert them into Ports -table for the same game.
         goal_list = self.get_random_goals_from_API()
-        goal_at_airport = []
-
         for i, goal_id in enumerate(goal_list):
 
             # Update the database by iterating over goal_list and add a goal in order
@@ -99,13 +92,5 @@ class Start:
             cursor = config.conn.cursor(dictionary=True)
             cursor.execute(sql, (game_id, self.all_airports[i]['ident'], goal_id))
 
-            # This is the exact same goal data as in database but so we can see it in /create_game JSON
-            airport_with_goal = {self.all_airports[i]['name']: goal_id}
-            goal_at_airport.append(airport_with_goal)
+        return self.status['id']
 
-        # Format all create_game data to dictionary.
-        all_create_game_data = {"all_airports_data": self.all_airports,
-                                "start_airport_data": start_airport_data,
-                                "goal_at_airport": goal_at_airport,
-                                "status": self.status}
-        return all_create_game_data

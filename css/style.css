@@ -177,6 +177,7 @@ main {
 .not-in-range-icon{
     filter: none;
     background-color: #837676;
+    border-radius: 50%;
 }
 
 

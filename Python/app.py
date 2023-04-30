@@ -1,6 +1,7 @@
 import json
 import os
 from start import Start
+from game import Game
 
 import mysql.connector
 from dotenv import load_dotenv
@@ -28,6 +29,7 @@ CORS(app)
 
 start = Start()
 
+
 @app.route("/airport")
 def get_all_airports():
     result = start.get_airports()
@@ -36,15 +38,23 @@ def get_all_airports():
 
 
 @app.route("/creategame")
-def get_start_airports():
+def create_new_game():
 
     # Extracting the player name from the url ...?name=""
     args = request.args
     player_name_from_url = args.get("name")
 
     if player_name_from_url is not None:
+
+        # Send the player name to Start to make new database for this new game
         result = start.create_game(player_name_from_url)
-        json_data = json.dumps(result)
+
+        # Start returns the newly created games id
+        new_game_id = json.dumps(result)
+
+        # Insert this newly created id to Game class and get game data
+        game = Game(new_game_id).check_airports_in_range()
+        json_data = json.dumps(game)
         return Response(json_data, status=200, mimetype='application/json')
     else:
         return "No player name provided"

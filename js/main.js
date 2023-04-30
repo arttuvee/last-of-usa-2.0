@@ -56,10 +56,10 @@ function checkGameOver(range) {
 
 function updateStatus(status) {
     // Insert player name and range to the HTML-page. Source for information is the 'status' part of the JSON
-  document.querySelector('#player-name').innerHTML = `Player: ${status.player_name}`;
-  document.querySelector('#player-location').innerHTML = status.location;
-  document.querySelector('#range-left').innerHTML = status.battery_range;
-  document.querySelector('#days-left').innerHTML = status.days_left;
+  document.querySelector('#player-name').innerHTML = `Player: ${status.status.name}`;
+  document.querySelector('#player-location').innerHTML = status.status.current_airport[0].name;
+  document.querySelector('#range-left').innerHTML = status.status.battery_range;
+  document.querySelector('#days-left').innerHTML = status.status.days_left;
 
   // Update recourse icon colours if player finds them. Gets the data from same 'status'
   if (status.water_collected === 1) {
@@ -82,54 +82,69 @@ async function gameSetup(url) {
     try {
 
         // Fetches a JSON that has all the data for a new game
-        const gameData = await fetchData(url);
+          const gameData = await fetchData(url);
 
-        // Adds all airports to the map first
-        for (let i = 0; i < gameData.all_airports_data.length; i++) {
+          // Adds a marker for the starting airport
+          const current_location_marker = L.marker([gameData.status.current_airport[0].latitude_deg, gameData.status.current_airport[0].longitude_deg]).addTo(map)
+            .bindPopup(`<b>This is the starting airport</b> <br>${gameData.status.current_airport[0].name}`).openPopup();
 
-          // This how to access one specific airport from the dataset
-          let airport = gameData.all_airports_data[i];
-
-          // Add a map marker for a specific airport
-          const airport_marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map);
-          airport_marker.setIcon(greenIcon);
-
-          // Make a div for where all popup content is stored
-          const popupContent = document.createElement('div')
-          const h4 = document.createElement('h4')
-          h4.innerHTML = airport.name
-          popupContent.append(h4)
-
-          // Add 'Fly here' button to popup content
-          const goButton = document.createElement('button')
-          goButton.classList.add('button')
-          goButton.innerHTML = 'Fly here'
-          popupContent.append(goButton)
-
-          // Add text content to popup content
-          const p = document.createElement('p')
-          p.innerHTML = `distance is x km`
-          popupContent.append(p)
-
-          airport_marker.bindPopup(popupContent)
+        // Set current location icon to blue
+        current_location_marker.setIcon(blueIcon)
 
 
+        // Iterate over all airports
+        for (let i = 0; i < gameData.all_airports.length; i++) {
 
+          // Access one specific airport from the dataset
+          let airport = gameData.all_airports[i];
 
+          // Using a boolean determine if airport is in range --> green marker
+          if (airport.in_range){
+            // Add a map marker for a specific airport
+            const airport_marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map);
+            airport_marker.setIcon(greenIcon);
 
+            // Make a div for where all popup content is stored
+            const popupContent = document.createElement('div')
+            const h4 = document.createElement('h4')
+            h4.innerHTML = airport.name
+            popupContent.append(h4)
 
+            // Add 'Fly here' button to popup content
+            const goButton = document.createElement('button')
+            goButton.classList.add('button')
+            goButton.innerHTML = 'Fly here'
+            popupContent.append(goButton)
+
+            // Add text content to popup content
+            const p = document.createElement('p')
+            p.innerHTML = `This airport is ${airport.distance_to}km away!`
+            popupContent.append(p)
+
+            airport_marker.bindPopup(popupContent)
+
+            }
+          // If the in_range boolean is false --> gray marker
+          else{
+            const airport_marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map);
+            airport_marker.setIcon(not_in_range_Icon);
+
+            // Make a div for where all popup content is stored
+            const popupContent = document.createElement('div')
+            const h4 = document.createElement('h4')
+            h4.innerHTML = airport.name
+            popupContent.append(h4)
+
+            // Add text content to popup content
+            const p = document.createElement('p')
+            p.innerHTML = `You dont have enough range!`
+            popupContent.append(p)
+
+            airport_marker.bindPopup(popupContent)
+          }
         }
-
-        // Adds a marker for the starting airport
-        console.log(`This is all the gameData ${gameData}`);
-        const current_location_marker = L.marker([gameData.start_airport_data.latitude_deg, gameData.start_airport_data.longitude_deg]).addTo(map)
-        .bindPopup(`<b>This is the starting airport</b> <br>${gameData.start_airport_data.name}`).openPopup();
-
-          // Set current location icon to blue
-          current_location_marker.setIcon(blueIcon)
-
         // Send gameData to updateStatus function
-        updateStatus(gameData.status);
+        updateStatus(gameData);
 
     } catch (error) {
         console.log(`this is gameSetup catch block error: ${error}`);
