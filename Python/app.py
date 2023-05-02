@@ -1,6 +1,7 @@
 import json
 import os
 from start import Start
+import game
 from game import Game
 
 import mysql.connector
@@ -28,7 +29,7 @@ app = Flask(__name__)
 CORS(app)
 
 start = Start()
-
+current_game = None
 
 @app.route("/airport")
 def get_all_airports():
@@ -37,6 +38,21 @@ def get_all_airports():
     return Response(json_data, status=200, mimetype='application/json')
 
 
+# http://127.0.0.1:3000/flyto?game=151&dest=KJFK&dist=100
+@app.route('/flyto')
+def flyto():
+    args = request.args
+    game_id = args.get("game")
+    destination = args.get("dest")
+    distance = args.get("dist")
+
+    global current_game
+    data = current_game.fly(game_id, destination, distance)
+
+    return Response(json.dumps(data), status=200, mimetype='application/json')
+
+
+# http://127.0.0.1:3000/creategame?name=lol
 @app.route("/creategame")
 def create_new_game():
 
@@ -53,8 +69,11 @@ def create_new_game():
         new_game_id = json.dumps(result)
 
         # Insert this newly created id to Game class and get game data
-        game = Game(new_game_id).check_airports_in_range()
-        json_data = json.dumps(game)
+        global current_game
+        current_game = Game(new_game_id)
+        data = current_game.check_airports_in_range()
+
+        json_data = json.dumps(data)
         return Response(json_data, status=200, mimetype='application/json')
     else:
         return "No player name provided"

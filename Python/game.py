@@ -58,6 +58,13 @@ def get_airports(game_id):
     res = cur.fetchall()
     return res
 
+def check_goal(game_id, ident):
+    sql = f"SELECT goal FROM ports WHERE "
+    cur = config.conn.cursor(dictionary=True)
+    cur.execute(sql)
+    res = cur.fetchall()
+    return res
+
 
 class Game:
     def __init__(self, game_id):
@@ -66,14 +73,13 @@ class Game:
         self.current_ident = get_player_data(self.game_id)[0]['location']
         config.player_name = get_player_data(self.game_id)[0]['screen_name']
         config.battery = get_player_data(self.game_id)[0]['player_range']
-        self.current_airport = get_airport_info(self.current_ident)
+        self.current_airport = get_airport_info(self.current_ident)[0]
         self.all_airports = get_airports(self.game_id)
 
 
         self.status = {
             "id": self.game_id,
             "name": config.player_name,
-            "current_airport": self.current_airport,
             "food_collected": config.food,
             "water_collected": config.water,
             "solar_collected": config.solar,
@@ -82,13 +88,38 @@ class Game:
             "days_left": config.days_left
         }
 
+    def fly(self, game_id, dest, dist):
+        # TODO distancen vähennys
+        self.game_id = game_id
+        self.current_ident = get_player_data(game_id)[0]['location']
+        self.current_airport = get_airport_info(self.current_ident)[0]
+
+        sql = f"UPDATE ports SET opened = 1 WHERE game = {self.game_id} AND airport = '{dest}'"
+        cursor = config.conn.cursor()
+        cursor.execute(sql)
+
+        sql = f"UPDATE game SET location = '{dest}', player_range = {config.battery} WHERE id={self.game_id}"
+        cursor = config.conn.cursor()
+        cursor.execute(sql)
+        config.conn.commit()
+
+        # Define the ident code of the airport to remove from all airports.
+        ident_to_remove = dest
+
+        # Iterate through the list and remove the element with matching ident code
+        for i in range(len(self.all_airports)):
+            if self.all_airports[i]["ident"] == ident_to_remove:
+                self.all_airports.pop(i)
+                break
+
+        return self.check_airports_in_range()
+
     def check_airports_in_range(self):
         self.airports_in_range = airports_in_range(self.current_ident, self.all_airports, config.battery)
         self.all_game_data = {
             'all_airports': self.airports_in_range,
+            'current_airport': self.current_airport,
             'status': self.status}
 
         return self.all_game_data
 
-    def print_info(self):
-        return self.all_game_data

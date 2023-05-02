@@ -93,4 +93,3 @@ class Start:
             cursor.execute(sql, (game_id, self.all_airports[i]['ident'], goal_id))
 
         return self.status['id']
-

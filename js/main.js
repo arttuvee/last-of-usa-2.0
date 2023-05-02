@@ -54,24 +54,24 @@ function checkGameOver(range) {
     return true;
 }
 
-function updateStatus(status) {
+function updateStatus(gameData) {
     // Insert player name and range to the HTML-page. Source for information is the 'status' part of the JSON
-  document.querySelector('#player-name').innerHTML = `Player: ${status.status.name}`;
-  document.querySelector('#player-location').innerHTML = status.status.current_airport[0].name;
-  document.querySelector('#range-left').innerHTML = status.status.battery_range;
-  document.querySelector('#days-left').innerHTML = status.status.days_left;
+  document.querySelector('#player-name').innerHTML = `Player: ${gameData.status.name}`;
+  document.querySelector('#player-location').innerHTML = gameData.current_airport.name;
+  document.querySelector('#range-left').innerHTML = gameData.status.battery_range;
+  document.querySelector('#days-left').innerHTML = gameData.status.days_left;
 
   // Update recourse icon colours if player finds them. Gets the data from same 'status'
-  if (status.water_collected === 1) {
+  if (gameData.status.water_collected === 1) {
   document.querySelector('#water-outline').classList.add('config-1');
 }
-  if (status.food_collected === 1) {
+  if (gameData.status.food_collected === 1) {
   document.querySelector('#fast-food-outline').classList.add('config-1');
 }
-  if (status.solar_collected === 1) {
+  if (gameData.status.solar_collected === 1) {
   document.querySelector('#sunny-outline').classList.add('config-1');
 }
-  if (status.medicine_collected === 1) {
+  if (gameData.status.medicine_collected === 1) {
   document.querySelector('#medkit-outline').classList.add('config-1');
 }
 }
@@ -85,9 +85,8 @@ async function gameSetup(url) {
           const gameData = await fetchData(url);
 
           // Adds a marker for the starting airport
-          const current_location_marker = L.marker([gameData.status.current_airport[0].latitude_deg, gameData.status.current_airport[0].longitude_deg]).addTo(map)
-            .bindPopup(`<b>This is the starting airport</b> <br>${gameData.status.current_airport[0].name}`).openPopup();
-
+          const current_location_marker = L.marker([gameData.current_airport.latitude_deg, gameData.current_airport.longitude_deg]).addTo(map)
+            .bindPopup(`<b>You are here!</b> <br>${gameData.current_airport.name}`).openPopup();
         // Set current location icon to blue
         current_location_marker.setIcon(blueIcon)
 
@@ -123,7 +122,10 @@ async function gameSetup(url) {
 
             airport_marker.bindPopup(popupContent)
 
-            }
+            goButton.addEventListener('click', function () {
+              gameSetup(`http://127.0.0.1:3000/flyto?game=${parseInt(gameData.status.id)}&dest=${airport.ident}&dist=${airport.distance_to}`);
+            });
+          }
           // If the in_range boolean is false --> gray marker
           else{
             const airport_marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map);
