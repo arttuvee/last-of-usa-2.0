@@ -15,6 +15,7 @@ class Start:
         cursor = config.conn.cursor(dictionary=True)
         cursor.execute(sql)
         result = cursor.fetchone()
+        result['active'] = True
         return result
 
     # Query to get all airports
@@ -79,9 +80,6 @@ class Start:
         # Generate new id for the game
         game_id = cursor.lastrowid
         self.status['id'] = game_id
-
-        # KUN SELAAT DB -PORTS TAULUKKOA, SARAKE "ID" EI TOIMI. VERTAILE PORTS JA GAME TAULUN SARAKKEITA!
-        # KUN SELAAT DB -PORTS TAULUKKOA, SARAKE "ID" EI TOIMI. VERTAILE PORTS JA GAME TAULUN SARAKKEITA!
 
         # Get random goals from API and insert them into Ports -table for the same game.
         goal_list = self.get_random_goals_from_API()

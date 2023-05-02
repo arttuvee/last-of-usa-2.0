@@ -31,13 +31,6 @@ CORS(app)
 start = Start()
 current_game = None
 
-@app.route("/airport")
-def get_all_airports():
-    result = start.get_airports()
-    json_data = json.dumps(result)
-    return Response(json_data, status=200, mimetype='application/json')
-
-
 # http://127.0.0.1:3000/flyto?game=151&dest=KJFK&dist=100
 @app.route('/flyto')
 def flyto():

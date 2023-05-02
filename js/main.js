@@ -15,13 +15,15 @@ const blueIcon = L.divIcon({className:'blue-icon'});
 const greenIcon = L.divIcon({className:'green-icon'});
 const not_in_range_Icon = L.divIcon({className:'not-in-range-icon'});
 
+const airportMarkers = L.featureGroup().addTo(map);
+
 // form for player name - Asks for player name and after submit disappears
 document.querySelector('#player-form').addEventListener('submit', function(evt) {
     evt.preventDefault();
     const playerName = document.querySelector('#player-input').value;
     document.querySelector('#player-modal').classList.add('hide');
 
-    // pass the player name from the form to the url
+    // pass the player name from the form to the url and start a new game
     gameSetup(`http://127.0.0.1:3000/creategame?name=${playerName}`);
 });
 
@@ -82,14 +84,18 @@ async function gameSetup(url) {
     try {
 
         // Fetches a JSON that has all the data for a new game
-          const gameData = await fetchData(url);
+        const gameData = await fetchData(url);
 
-          // Adds a marker for the starting airport
-          const current_location_marker = L.marker([gameData.current_airport.latitude_deg, gameData.current_airport.longitude_deg]).addTo(map)
-            .bindPopup(`<b>You are here!</b> <br>${gameData.current_airport.name}`).openPopup();
+        // Clear old markers from the map
+        airportMarkers.clearLayers();
+
+        // Adds a marker for current airport
+        const current_location_marker = L.marker([gameData.current_airport.latitude_deg, gameData.current_airport.longitude_deg])
+        .addTo(map).bindPopup(`<b>You are here!</b> <br>${gameData.current_airport.name}`).openPopup();
+
         // Set current location icon to blue
         current_location_marker.setIcon(blueIcon)
-
+        airportMarkers.addLayer(current_location_marker)
 
         // Iterate over all airports
         for (let i = 0; i < gameData.all_airports.length; i++) {
@@ -99,9 +105,11 @@ async function gameSetup(url) {
 
           // Using a boolean determine if airport is in range --> green marker
           if (airport.in_range){
+
             // Add a map marker for a specific airport
             const airport_marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map);
             airport_marker.setIcon(greenIcon);
+            airportMarkers.addLayer(airport_marker)
 
             // Make a div for where all popup content is stored
             const popupContent = document.createElement('div')
@@ -117,19 +125,22 @@ async function gameSetup(url) {
 
             // Add text content to popup content
             const p = document.createElement('p')
-            p.innerHTML = `This airport is ${airport.distance_to}km away!`
+            p.innerHTML = `This ${airport.type} is ${airport.distance_to}km away`
             popupContent.append(p)
 
             airport_marker.bindPopup(popupContent)
 
-            goButton.addEventListener('click', function () {
+            goButton.addEventListener('click',  function () {
+              gameSetup(`http://127.0.0.1:3000/flyto?game=${parseInt(gameData.status.id)}&dest=${airport.ident}&dist=${airport.distance_to}`);
               gameSetup(`http://127.0.0.1:3000/flyto?game=${parseInt(gameData.status.id)}&dest=${airport.ident}&dist=${airport.distance_to}`);
             });
           }
           // If the in_range boolean is false --> gray marker
           else{
-            const airport_marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map);
-            airport_marker.setIcon(not_in_range_Icon);
+            const gray_airport_marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map);
+            gray_airport_marker.setIcon(not_in_range_Icon);
+
+            airportMarkers.addLayer(gray_airport_marker);
 
             // Make a div for where all popup content is stored
             const popupContent = document.createElement('div')
@@ -142,7 +153,7 @@ async function gameSetup(url) {
             p.innerHTML = `You dont have enough range!`
             popupContent.append(p)
 
-            airport_marker.bindPopup(popupContent)
+            gray_airport_marker.bindPopup(popupContent)
           }
         }
         // Send gameData to updateStatus function

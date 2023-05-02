@@ -38,10 +38,12 @@ def airports_in_range(current_ident, a_ports, player_range):
     in_range = []
     for a_port in a_ports:
         distance_between = calculate_distance(current_ident, a_port['ident'])
+
         if distance_between <= player_range and not distance_between == 0:
             a_port['in_range'] = True
         else:
             a_port['in_range'] = False
+
         a_port['active'] = False
         a_port['goal_opened'] = False
         a_port['distance_to'] = round(distance_between, 2)
@@ -57,6 +59,7 @@ def get_airports(game_id):
     cur.execute(sql)
     res = cur.fetchall()
     return res
+
 
 def check_goal(game_id, ident):
     sql = f"SELECT goal FROM ports WHERE "
