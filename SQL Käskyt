@@ -1,0 +1,32 @@
+CREATE DATABASE Last_of_USA;
+USE Last_of_USA;
+
+importtaa ite se koko tiedosto (SOURCE ja sit tiedostosijainti)
+
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE game;
+DROP TABLE goal;
+DROP TABLE goal_reached;
+SET FOREIGN_KEY_CHECKS = 1;
+
+
+  create table game
+  (
+      id           int auto_increment
+          primary key,
+      location     varchar(40) null,
+      screen_name  varchar(40) null,
+      player_range int         null
+  )
+   charset = latin1;
+
+
+ create table ports
+ (
+     id      int auto_increment
+         primary key,
+     game    int                  null,
+     airport varchar(11)          not null,
+     goal    int                  null,
+     opened  tinyint(1) default 0 null
+ );
