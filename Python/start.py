@@ -21,7 +21,7 @@ class Start:
     # Query to get all airports
     def get_airports(self):
         sql = """SELECT name, ident, latitude_deg, longitude_deg, type FROM airport
-                       WHERE ident = "KLAX" or ident = "KJFK" or ident = "KAUS" or ident = "KMSP" or ident = "KSEA" or ident = "KABQ" or ident = "KALN" or 
+                       WHERE ident = "KLAX" or ident = "KJFK" or ident = "KAUS" or ident = "KMKE" or ident = "KSEA" or ident = "KABQ" or ident = "KALN" or 
                        ident = "KBIL" or ident = "KBIS" or ident = "KCHO" or ident = "KCSG" or ident = "KGRI" or
                        ident = "KLCH" or ident = "KPTK" or ident = "KPVU";"""
         cur = config.conn.cursor(dictionary=True)
