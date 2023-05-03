@@ -129,6 +129,7 @@ async function gameSetup(url) {
             popupContent.append(p)
 
             airport_marker.bindPopup(popupContent)
+            popupContent.classList.add('popup');
 
             goButton.addEventListener('click',  function () {
               gameSetup(`http://127.0.0.1:3000/flyto?game=${parseInt(gameData.status.id)}&dest=${airport.ident}&dist=${airport.distance_to}`);
@@ -154,6 +155,7 @@ async function gameSetup(url) {
             popupContent.append(p)
 
             gray_airport_marker.bindPopup(popupContent)
+            popupContent.classList.add('popup');
           }
         }
         // Send gameData to updateStatus function
