@@ -101,6 +101,7 @@ async function gameSetup(url) {
         // Iterate over all airports
         for (let i = 0; i < gameData.all_airports.length; i++) {
 
+
           // Access one specific airport from the dataset
           let airport = gameData.all_airports[i];
 

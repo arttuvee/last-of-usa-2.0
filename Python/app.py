@@ -31,6 +31,7 @@ CORS(app)
 start = Start()
 current_game = None
 
+
 # http://127.0.0.1:3000/flyto?game=151&dest=KJFK&dist=100
 @app.route('/flyto')
 def flyto():

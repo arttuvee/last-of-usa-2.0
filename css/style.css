@@ -304,6 +304,7 @@ button {
     cursor: pointer;
 }
 
+
 button:hover {
     padding: .75rem 3rem;
     font-size: 20px;

@@ -104,9 +104,7 @@ class Game:
 
         # If this new airport is a large airport player gets more range by charging their plane
         if get_airport_info(dest)[0]['type'] == 'large_airport':
-            print('lol')
             self.status['battery_range'] += 1500
-            print(self.status['battery_range'])
 
         # Update database goal table
         sql = f"UPDATE ports SET opened = 1 WHERE game = {self.game_id} AND airport = '{dest}'"
