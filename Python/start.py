@@ -52,7 +52,12 @@ class Start:
     # Function that starts the game and prepares the database
     def create_game(self, player_name):
 
+        # Establish starting values for the new game
         config.battery = 3000
+        config.water = 0
+        config.food = 0
+        config.medicine = 0
+        config.solar = 0
 
         # Bring the player name over from the url
         self.player_name = player_name

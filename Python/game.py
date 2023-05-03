@@ -58,16 +58,16 @@ def get_airports(game_id):
     cur = config.conn.cursor(dictionary=True)
     cur.execute(sql)
     res = cur.fetchall()
+    res.append
     return res
 
 
-def check_goal(game_id, ident):
-    sql = f"SELECT goal FROM ports WHERE "
+def check_goal(game_id, dest):
+    sql = f"select goal, opened from ports where game={game_id} and airport='{dest}'"
     cur = config.conn.cursor(dictionary=True)
     cur.execute(sql)
     res = cur.fetchall()
     return res
-
 
 class Game:
     def __init__(self, game_id):
@@ -77,8 +77,10 @@ class Game:
         config.player_name = get_player_data(self.game_id)[0]['screen_name']
         self.current_airport = get_airport_info(self.current_ident)[0]
         self.all_airports = get_airports(self.game_id)
-        self.event = ""
 
+        # Placeholder text for the HTML element - This text is displayed when a new game is started
+        self.event = "Welcome to the last of the USA! This box is here to keep you updated on the game events. " \
+                     "It will automatically update during the game"
 
         self.status = {
             "id": self.game_id,
@@ -92,10 +94,40 @@ class Game:
             "event": self.event
         }
 
+    def what_goal_in_airport(self, game_id, dest):
+        goal_at_current = check_goal(game_id, dest)[0]['goal']
+
+        if goal_at_current == 0:
+            self.status['food_collected'] = True
+            self.status['event'] = "You found the food resources you needed!"
+
+        elif goal_at_current == 1:
+            self.status['water_collected'] = True
+            self.status['event'] = "You found the water purification resources you needed!"
+
+        elif goal_at_current == 2:
+            self.status['solar_collected'] = True
+            self.status['event'] = "You found the necessary solar panels!"
+
+        elif goal_at_current == 3:
+            self.status['medicine_collected'] = True
+            self.status['event'] = "You found the medical supplies you needed!"
+
+        elif goal_at_current == 4:
+            self.status['event'] = 'You searched through the whole airport but came out empty handed'
+
+        elif goal_at_current == 5:
+            self.status['event'] = 'You faced a robber with bad intentions but made it out just in the nick of time.' \
+                         ' Unfortunately empty handed '
+
     def fly(self, game_id, dest, dist):
 
         # travel distance is subtracted from battery range
         self.status['battery_range'] -= float(dist)/2
+
+        # Check what goal does this destination airport contain and update the player
+        self.what_goal_in_airport(game_id, dest)
+        print(self.status)
 
         # Update player data on new location
         self.game_id = game_id
@@ -105,6 +137,7 @@ class Game:
         # If this new airport is a large airport player gets more range by charging their plane
         if get_airport_info(dest)[0]['type'] == 'large_airport':
             self.status['battery_range'] += 1500
+            self.status['event'] += ". During your searching you charged your plane and got more range to play with!"
 
         # Update database goal table
         sql = f"UPDATE ports SET opened = 1 WHERE game = {self.game_id} AND airport = '{dest}'"

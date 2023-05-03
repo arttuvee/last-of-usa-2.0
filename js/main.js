@@ -1,43 +1,43 @@
 'use strict';
-/* 1. show map using Leaflet library. (L comes from the Leaflet library) */
 
+// Establish leaflet map into the game
 const map = L.map('map').setView([37.8, -96], 4);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+  maxZoom: 19,
+  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+}).addTo(map);
 
 // global variables
 const apiUrl = 'http://127.0.0.1:3000/';
+let days_left = 10;
 
 // icons
-const blueIcon = L.divIcon({className:'blue-icon'});
-const greenIcon = L.divIcon({className:'green-icon'});
-const not_in_range_Icon = L.divIcon({className:'not-in-range-icon'});
-
+const blueIcon = L.divIcon({className: 'blue-icon'});
+const greenIcon = L.divIcon({className: 'green-icon'});
+const not_in_range_Icon = L.divIcon({className: 'not-in-range-icon'});
 const airportMarkers = L.featureGroup().addTo(map);
 
 // form for player name - Asks for player name and after submit disappears
-document.querySelector('#player-form').addEventListener('submit', function(evt) {
-    evt.preventDefault();
-    const playerName = document.querySelector('#player-input').value;
-    document.querySelector('#player-modal').classList.add('hide');
+document.querySelector('#player-form').
+    addEventListener('submit', function(evt) {
+      evt.preventDefault();
+      const playerName = document.querySelector('#player-input').value;
+      document.querySelector('#player-modal').classList.add('hide');
 
-    // pass the player name from the form to the url and start a new game
-    gameSetup(`http://127.0.0.1:3000/creategame?name=${playerName}`);
-});
+      // pass the player name from the form to the url and start a new game
+      gameSetup(`http://127.0.0.1:3000/creategame?name=${playerName}`);
+    });
 
 // function to fetch data from API
 async function fetchData(url) {
-    const response = await fetch(url);
-    console.log(response)
+  const response = await fetch(url);
+  console.log(response);
 
-    //if wrong data is sent there will be error message and it won't continue.
-    if (!response.ok) throw new Error('Invalid server input!');
+  //if wrong data is sent there will be error message and it won't continue.
+  if (!response.ok) throw new Error('Invalid server input!');
   return await response.json();
 }
-
-
 
 // function to update game status
 
@@ -49,35 +49,42 @@ async function fetchData(url) {
 
 // function to check if game is over
 function checkGameOver(range) {
-    if (range <= 0) {
-        alert(`You ran out of range Game Over. ${globalGoals.length} goals reached.`)
-        return false;
-    }
-    return true;
+  if (range <= 0) {
+    alert(
+        `You ran out of range Game Over. ${globalGoals.length} goals reached.`);
+    return false;
+  }
+  return true;
 }
 
 function updateStatus(gameData) {
-    // Insert player name and range to the HTML-page. Source for information is the 'status' part of the JSON
-  document.querySelector('#player-name').innerHTML = `Player: ${gameData.status.name}`;
-  document.querySelector('#player-location').innerHTML = gameData.current_airport.name;
-  document.querySelector('#range-left').innerHTML = Math.round(gameData.status.battery_range);
-  document.querySelector('#days-left').innerHTML = gameData.status.days_left;
+
+  // Insert player name and range to the HTML-page. Source for information is the 'status' part of the JSON
+  document.querySelector(
+      '#player-name').innerHTML = `Player: ${gameData.status.name}`;
+  document.querySelector(
+      '#player-location').innerHTML = gameData.current_airport.name;
+  document.querySelector('#range-left').innerHTML = Math.round(
+      gameData.status.battery_range);
+  document.querySelector('#days-left').innerHTML = days_left;
+  days_left -= 1;
+  document.querySelector('#dialogue-target').innerHTML = gameData.status.event;
+  console.log(gameData.status);
 
   // Update recourse icon colours if player finds them. Gets the data from same 'status'
-  if (gameData.status.water_collected === 1) {
-  document.querySelector('#water-outline').classList.add('config-1');
+  if (gameData.status.water_collected === true) {
+    document.querySelector('#water-outline').classList.add('config-1');
+  }
+  if (gameData.status.food_collected === true) {
+    document.querySelector('#fast-food-outline').classList.add('config-1');
+  }
+  if (gameData.status.solar_collected === true) {
+    document.querySelector('#sunny-outline').classList.add('config-1');
+  }
+  if (gameData.status.medicine_collected === true) {
+    document.querySelector('#medkit-outline').classList.add('config-1');
+  }
 }
-  if (gameData.status.food_collected === 1) {
-  document.querySelector('#fast-food-outline').classList.add('config-1');
-}
-  if (gameData.status.solar_collected === 1) {
-  document.querySelector('#sunny-outline').classList.add('config-1');
-}
-  if (gameData.status.medicine_collected === 1) {
-  document.querySelector('#medkit-outline').classList.add('config-1');
-}
-}
-
 
 // Function to set up game - this is the main function that creates the game and calls the other functions
 async function gameSetup(url) {
@@ -167,5 +174,4 @@ async function gameSetup(url) {
         console.log(`this is gameSetup catch block error: ${error}`);
     }
 }
-
 
