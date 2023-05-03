@@ -52,6 +52,8 @@ class Start:
     # Function that starts the game and prepares the database
     def create_game(self, player_name):
 
+        config.battery = 3000
+
         # Bring the player name over from the url
         self.player_name = player_name
 

@@ -60,7 +60,7 @@ function updateStatus(gameData) {
     // Insert player name and range to the HTML-page. Source for information is the 'status' part of the JSON
   document.querySelector('#player-name').innerHTML = `Player: ${gameData.status.name}`;
   document.querySelector('#player-location').innerHTML = gameData.current_airport.name;
-  document.querySelector('#range-left').innerHTML = gameData.status.battery_range;
+  document.querySelector('#range-left').innerHTML = Math.round(gameData.status.battery_range);
   document.querySelector('#days-left').innerHTML = gameData.status.days_left;
 
   // Update recourse icon colours if player finds them. Gets the data from same 'status'
@@ -88,6 +88,7 @@ async function gameSetup(url) {
 
         // Clear old markers from the map
         airportMarkers.clearLayers();
+        console.log(gameData)
 
         // Adds a marker for current airport
         const current_location_marker = L.marker([gameData.current_airport.latitude_deg, gameData.current_airport.longitude_deg])
@@ -129,6 +130,7 @@ async function gameSetup(url) {
             popupContent.append(p)
 
             airport_marker.bindPopup(popupContent)
+            popupContent.classList.add('popup');
 
             goButton.addEventListener('click',  function () {
               gameSetup(`http://127.0.0.1:3000/flyto?game=${parseInt(gameData.status.id)}&dest=${airport.ident}&dist=${airport.distance_to}`);
@@ -154,6 +156,7 @@ async function gameSetup(url) {
             popupContent.append(p)
 
             gray_airport_marker.bindPopup(popupContent)
+            popupContent.classList.add('popup');
           }
         }
         // Send gameData to updateStatus function
@@ -163,6 +166,5 @@ async function gameSetup(url) {
         console.log(`this is gameSetup catch block error: ${error}`);
     }
 }
-
 
 

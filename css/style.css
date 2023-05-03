@@ -70,6 +70,7 @@
 }
 
 li a {
+
     background-image: linear-gradient(to right, #D31027 0%, var(--red) 51%, #D31027 100%);
     padding: 1rem;
     border-radius: 20%;
@@ -319,4 +320,17 @@ footer {
     justify-content: center;
     border-top: solid .25rem var(--black);
     padding: 3rem 0;
+}
+
+.popup {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.popup h4 {
+    margin-bottom: .5rem;
+    font-weight: 600;
 }

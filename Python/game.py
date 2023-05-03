@@ -75,9 +75,9 @@ class Game:
         self.game_id = game_id
         self.current_ident = get_player_data(self.game_id)[0]['location']
         config.player_name = get_player_data(self.game_id)[0]['screen_name']
-        config.battery = get_player_data(self.game_id)[0]['player_range']
         self.current_airport = get_airport_info(self.current_ident)[0]
         self.all_airports = get_airports(self.game_id)
+        self.event = ""
 
 
         self.status = {
@@ -87,21 +87,34 @@ class Game:
             "water_collected": config.water,
             "solar_collected": config.solar,
             "medicine_collected": config.medicine,
-            "battery_range": config.battery,
-            "days_left": config.days_left
+            "battery_range": get_player_data(self.game_id)[0]['player_range'],
+            "days_left": config.days_left,
+            "event": self.event
         }
 
     def fly(self, game_id, dest, dist):
-        # TODO distancen vähennys
+
+        # travel distance is subtracted from battery range
+        self.status['battery_range'] -= float(dist)/2
+
+        # Update player data on new location
         self.game_id = game_id
         self.current_ident = get_player_data(game_id)[0]['location']
         self.current_airport = get_airport_info(self.current_ident)[0]
 
+        # If this new airport is a large airport player gets more range by charging their plane
+        if get_airport_info(dest)[0]['type'] == 'large_airport':
+            print('lol')
+            self.status['battery_range'] += 1500
+            print(self.status['battery_range'])
+
+        # Update database goal table
         sql = f"UPDATE ports SET opened = 1 WHERE game = {self.game_id} AND airport = '{dest}'"
         cursor = config.conn.cursor()
         cursor.execute(sql)
 
-        sql = f"UPDATE game SET location = '{dest}', player_range = {config.battery} WHERE id={self.game_id}"
+        # update database game table
+        sql = f"UPDATE game SET location = '{dest}', player_range = {self.status['battery_range']} WHERE id={self.game_id}"
         cursor = config.conn.cursor()
         cursor.execute(sql)
         config.conn.commit()
@@ -118,7 +131,7 @@ class Game:
         return self.check_airports_in_range()
 
     def check_airports_in_range(self):
-        self.airports_in_range = airports_in_range(self.current_ident, self.all_airports, config.battery)
+        self.airports_in_range = airports_in_range(self.current_ident, self.all_airports, self.status['battery_range'])
         self.all_game_data = {
             'all_airports': self.airports_in_range,
             'current_airport': self.current_airport,
