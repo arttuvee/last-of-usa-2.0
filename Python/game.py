@@ -34,7 +34,7 @@ def calculate_distance(current, destination):
 
 
 # get airports in range
-def airports_in_range(current_ident, a_ports, player_range):
+def all_airports_in_range(current_ident, a_ports, player_range):
     in_range = []
     for a_port in a_ports:
         distance_between = calculate_distance(current_ident, a_port['ident'])
@@ -49,6 +49,16 @@ def airports_in_range(current_ident, a_ports, player_range):
         a_port['distance_to'] = round(distance_between, 2)
         in_range.append(a_port)
     return in_range
+
+
+# get airports in range
+def medium_airports_in_range(current_ident, a_ports, player_range):
+    mediums_in_range = []
+    all_airports_list = all_airports_in_range(current_ident,a_ports,player_range)
+    for a_port in all_airports_list:
+        if a_port['type'] == 'medium_airport':
+            mediums_in_range.append(a_port)
+    return mediums_in_range
 
 
 # Query to get all airports with matching goals
@@ -68,6 +78,21 @@ def check_goal(game_id, dest):
     cur.execute(sql)
     res = cur.fetchall()
     return res
+
+
+def update_ports_table(game_id, dest):
+    sql = f"UPDATE ports SET opened = 1 WHERE game = {game_id} AND airport = '{dest}'"
+    cursor = config.conn.cursor()
+    cursor.execute(sql)
+    config.conn.commit()
+
+
+def update_game_table(game_id, dest, player_range):
+    sql = f"UPDATE game SET location = '{dest}', player_range = {player_range} WHERE id={game_id}"
+    cursor = config.conn.cursor()
+    cursor.execute(sql)
+    config.conn.commit()
+
 
 class Game:
     def __init__(self, game_id):
@@ -90,7 +115,6 @@ class Game:
             "solar_collected": config.solar,
             "medicine_collected": config.medicine,
             "battery_range": get_player_data(self.game_id)[0]['player_range'],
-            "days_left": config.days_left,
             "event": self.event
         }
 
@@ -114,41 +138,41 @@ class Game:
             self.status['event'] = "You found the medical supplies you needed!"
 
         elif goal_at_current == 4:
-            self.status['event'] = 'You searched through the whole airport but came out empty handed'
+            self.status['event'] = 'You searched through the whole airport but came out empty handed.'
 
         elif goal_at_current == 5:
             self.status['event'] = 'You faced a robber with bad intentions but made it out just in the nick of time.' \
-                         ' Unfortunately empty handed '
+                         ' Unfortunately empty handed. '
 
-    def fly(self, game_id, dest, dist):
+    def check_airports_in_range(self):
+        self.airports_in_range = all_airports_in_range(self.current_ident, self.all_airports, self.status['battery_range'])
+        self.all_game_data = {
+            'all_airports': self.airports_in_range,
+            'current_airport': self.current_airport,
+            'status': self.status}
+        return self.all_game_data
+
+    def fly(self, game_id, dest, dist, day):
 
         # travel distance is subtracted from battery range
         self.status['battery_range'] -= float(dist)/2
 
         # Check what goal does this destination airport contain and update the player
         self.what_goal_in_airport(game_id, dest)
-        print(self.status)
 
         # Update player data on new location
         self.game_id = game_id
         self.current_ident = get_player_data(game_id)[0]['location']
         self.current_airport = get_airport_info(self.current_ident)[0]
 
+        # Update database
+        update_ports_table(self.game_id, dest)
+        update_game_table(self.game_id, dest, self.status['battery_range'])
+
         # If this new airport is a large airport player gets more range by charging their plane
         if get_airport_info(dest)[0]['type'] == 'large_airport':
             self.status['battery_range'] += 1500
             self.status['event'] += ". During your searching you charged your plane and got more range to play with!"
-
-        # Update database goal table
-        sql = f"UPDATE ports SET opened = 1 WHERE game = {self.game_id} AND airport = '{dest}'"
-        cursor = config.conn.cursor()
-        cursor.execute(sql)
-
-        # update database game table
-        sql = f"UPDATE game SET location = '{dest}', player_range = {self.status['battery_range']} WHERE id={self.game_id}"
-        cursor = config.conn.cursor()
-        cursor.execute(sql)
-        config.conn.commit()
 
         # Define the ident code of the airport to remove from all airports.
         ident_to_remove = dest
@@ -159,14 +183,19 @@ class Game:
                 self.all_airports.pop(i)
                 break
 
-        return self.check_airports_in_range()
+        # Through the URL "day" variable determine did player choose: 1 large airport per day or 2 mediums per day
+        if day.isdigit():
+            # This is the path if player chose 1 large airport or already explored 1 medium
+            # meaning they get to see both types of airports in their next choice
+            return self.check_airports_in_range()
 
-    def check_airports_in_range(self):
-        self.airports_in_range = airports_in_range(self.current_ident, self.all_airports, self.status['battery_range'])
-        self.all_game_data = {
-            'all_airports': self.airports_in_range,
-            'current_airport': self.current_airport,
-            'status': self.status}
+        else:
+            # This path is active when player chooses to explore 2 medium airports in a day
+            # Therefore this path only returns mediums of which the player can choose their next destination
 
-        return self.all_game_data
-
+            self.mediums_in_range = medium_airports_in_range(self.current_ident, self.all_airports, self.status['battery_range'])
+            self.half_day_data = {
+                'all_airports': self.mediums_in_range,
+                'current_airport': self.current_airport,
+                'status': self.status}
+            return self.half_day_data

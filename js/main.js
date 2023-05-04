@@ -10,7 +10,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 // global variables
 const apiUrl = 'http://127.0.0.1:3000/';
-let days_left = 10;
+let days_left = 10
 
 // icons
 const blueIcon = L.divIcon({className: 'blue-icon'});
@@ -67,9 +67,7 @@ function updateStatus(gameData) {
   document.querySelector('#range-left').innerHTML = Math.round(
       gameData.status.battery_range);
   document.querySelector('#days-left').innerHTML = days_left;
-  days_left -= 1;
   document.querySelector('#dialogue-target').innerHTML = gameData.status.event;
-  console.log(gameData.status);
 
   // Update recourse icon colours if player finds them. Gets the data from same 'status'
   if (gameData.status.water_collected === true) {
@@ -88,90 +86,95 @@ function updateStatus(gameData) {
 
 // Function to set up game - this is the main function that creates the game and calls the other functions
 async function gameSetup(url) {
-    try {
+try {
 
-        // Fetches a JSON that has all the data for a new game
-        const gameData = await fetchData(url);
+    // Fetches a JSON that has all the data for a new game
+    const gameData = await fetchData(url);
 
-        // Clear old markers from the map
-        airportMarkers.clearLayers();
-        console.log(gameData)
+    // Clear old markers from the map
+    airportMarkers.clearLayers();
 
-        // Adds a marker for current airport
-        const current_location_marker = L.marker([gameData.current_airport.latitude_deg, gameData.current_airport.longitude_deg])
-        .addTo(map).bindPopup(`<b>You are here!</b> <br>${gameData.current_airport.name}`).openPopup();
+    // Adds a marker for current airport
+    const current_location_marker = L.marker([gameData.current_airport.latitude_deg, gameData.current_airport.longitude_deg])
+    .addTo(map).bindPopup(`<b>You are here!</b> <br>${gameData.current_airport.name}`).openPopup();
 
-        // Set current location icon to blue
-        current_location_marker.setIcon(blueIcon)
-        airportMarkers.addLayer(current_location_marker)
+    // Set current location icon to blue
+    current_location_marker.setIcon(blueIcon)
+    airportMarkers.addLayer(current_location_marker)
 
-        // Iterate over all airports
-        for (let i = 0; i < gameData.all_airports.length; i++) {
+    // Iterate over all airports
+    for (let i = 0; i < gameData.all_airports.length; i++) {
+
+      // Access one specific airport from the dataset
+      let airport = gameData.all_airports[i];
+
+      // Using a boolean determine if airport is in range --> green marker
+      if (airport.in_range){
+
+        // Add a map marker for a specific airport
+        const airport_marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map);
+        airport_marker.setIcon(greenIcon);
+        airportMarkers.addLayer(airport_marker)
+
+        // Make a div for where all popup content is stored
+        const popupContent = document.createElement('div')
+        const h4 = document.createElement('h4')
+        h4.innerHTML = airport.name
+        popupContent.append(h4)
 
 
-          // Access one specific airport from the dataset
-          let airport = gameData.all_airports[i];
+        // Add 'Fly here' button to popup content
+        const goButton = document.createElement('button')
+        goButton.classList.add('button')
+        goButton.innerHTML = 'Fly here'
+        popupContent.append(goButton)
 
-          // Using a boolean determine if airport is in range --> green marker
-          if (airport.in_range){
+        // Add text content to popup content
+        const p = document.createElement('p')
+        p.innerHTML = `This ${airport.type} is ${airport.distance_to}km away`
+        popupContent.append(p)
 
-            // Add a map marker for a specific airport
-            const airport_marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map);
-            airport_marker.setIcon(greenIcon);
-            airportMarkers.addLayer(airport_marker)
+        airport_marker.bindPopup(popupContent)
+        popupContent.classList.add('popup');
 
-            // Make a div for where all popup content is stored
-            const popupContent = document.createElement('div')
-            const h4 = document.createElement('h4')
-            h4.innerHTML = airport.name
-            popupContent.append(h4)
-
-            // Add 'Fly here' button to popup content
-            const goButton = document.createElement('button')
-            goButton.classList.add('button')
-            goButton.innerHTML = 'Fly here'
-            popupContent.append(goButton)
-
-            // Add text content to popup content
-            const p = document.createElement('p')
-            p.innerHTML = `This ${airport.type} is ${airport.distance_to}km away`
-            popupContent.append(p)
-
-            airport_marker.bindPopup(popupContent)
-            popupContent.classList.add('popup');
-
-            goButton.addEventListener('click',  function () {
-              gameSetup(`http://127.0.0.1:3000/flyto?game=${parseInt(gameData.status.id)}&dest=${airport.ident}&dist=${airport.distance_to}`);
-              gameSetup(`http://127.0.0.1:3000/flyto?game=${parseInt(gameData.status.id)}&dest=${airport.ident}&dist=${airport.distance_to}`);
-            });
+        goButton.addEventListener('click',  function () {
+          if (airport.type === 'medium_airport'){
+            document.querySelector('#day-usage-taget').innerHTML = `You've chosen to explore two medium airports during day ${days_left}`
+            days_left -= 0.5
+          } else {
+            days_left -= 1
           }
-          // If the in_range boolean is false --> gray marker
-          else{
-            const gray_airport_marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map);
-            gray_airport_marker.setIcon(not_in_range_Icon);
+          gameSetup(`http://127.0.0.1:3000/flyto?game=${parseInt(gameData.status.id)}&dest=${airport.ident}&dist=${airport.distance_to}&day=${days_left}`);
+          gameSetup(`http://127.0.0.1:3000/flyto?game=${parseInt(gameData.status.id)}&dest=${airport.ident}&dist=${airport.distance_to}&day=${days_left}`);
 
-            airportMarkers.addLayer(gray_airport_marker);
+        });
+      }
+      // If the in_range boolean is false --> gray marker
+      else{
+        const gray_airport_marker = L.marker([airport.latitude_deg, airport.longitude_deg]).addTo(map);
+        gray_airport_marker.setIcon(not_in_range_Icon);
 
-            // Make a div for where all popup content is stored
-            const popupContent = document.createElement('div')
-            const h4 = document.createElement('h4')
-            h4.innerHTML = airport.name
-            popupContent.append(h4)
+        airportMarkers.addLayer(gray_airport_marker);
 
-            // Add text content to popup content
-            const p = document.createElement('p')
-            p.innerHTML = `You dont have enough range!`
-            popupContent.append(p)
+        // Make a div for where all popup content is stored
+        const popupContent = document.createElement('div')
+        const h4 = document.createElement('h4')
+        h4.innerHTML = airport.name
+        popupContent.append(h4)
 
-            gray_airport_marker.bindPopup(popupContent)
-            popupContent.classList.add('popup');
-          }
-        }
-        // Send gameData to updateStatus function
-        updateStatus(gameData);
+        // Add text content to popup content
+        const p = document.createElement('p')
+        p.innerHTML = `You dont have enough range!`
+        popupContent.append(p)
 
-    } catch (error) {
-        console.log(`this is gameSetup catch block error: ${error}`);
+        gray_airport_marker.bindPopup(popupContent)
+        popupContent.classList.add('popup');
+      }
     }
-}
+    // Send gameData to updateStatus function
+    updateStatus(gameData);
 
+} catch (error) {
+    console.log(`this is gameSetup catch block error: ${error}`);
+}
+}

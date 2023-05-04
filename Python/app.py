@@ -39,9 +39,10 @@ def flyto():
     game_id = args.get("game")
     destination = args.get("dest")
     distance = args.get("dist")
+    day = args.get("day")
 
     global current_game
-    data = current_game.fly(game_id, destination, distance)
+    data = current_game.fly(game_id, destination, distance, day)
 
     return Response(json.dumps(data), status=200, mimetype='application/json')
 
