@@ -82,6 +82,19 @@ function updateStatus(gameData) {
   if (gameData.status.medicine_collected === true) {
     document.querySelector('#medkit-outline').classList.add('config-1');
   }
+
+  //if player doesn't have enough range to continue the game.
+  const inRange = gameData.all_airports.filter(airport => airport.in_range);
+  const noneRange = inRange.every(airport => !airport.in_range);
+  if (noneRange) {
+    setTimeout(() => {
+    alert("Your plane has ran out of battery. Game over!");
+  }, 500);
+    const text = document.querySelector('#dialogue-target')
+    text.textContent = "Your plane has ran out of battery. You didn't survive :("
+  }
+
+
 }
 
 // Function to set up game - this is the main function that creates the game and calls the other functions
