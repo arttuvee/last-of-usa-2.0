@@ -235,7 +235,7 @@ span {
 
 #player-modal {
     width: 100vw;
-    height: 100vh;
+    height: 137vh;
     background-color: rgba(0, 0, 0, 0.8);
     position: absolute;
     top: 0;
@@ -333,4 +333,13 @@ footer {
 .popup h4 {
     margin-bottom: .5rem;
     font-weight: 600;
+}
+
+p {
+    text-align: center;
+}
+#hmm {
+
+    color: var(--red);
+
 }

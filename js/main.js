@@ -66,7 +66,7 @@ function updateStatus(gameData) {
       '#player-location').innerHTML = gameData.current_airport.name;
   document.querySelector('#range-left').innerHTML = Math.round(
       gameData.status.battery_range);
-  document.querySelector('#days-left').innerHTML = days_left;
+  document.querySelector('#days-left').innerHTML = Math.round(days_left);
   document.querySelector('#dialogue-target').innerHTML = gameData.status.event;
 
   // Update recourse icon colours if player finds them. Gets the data from same 'status'
@@ -139,10 +139,11 @@ try {
 
         goButton.addEventListener('click',  function () {
           if (airport.type === 'medium_airport'){
-            document.querySelector('#day-usage-taget').innerHTML = `You've chosen to explore two medium airports during day ${days_left}`
-            days_left -= 0.5
+            document.querySelector('#day-usage-taget').innerHTML = `You've chosen to explore two medium airports during day ${Math.round(days_left)}.`;
+            days_left -= 0.5;
           } else {
-            days_left -= 1
+            document.querySelector('#day-usage-taget').innerHTML = `You've chosen to explore one large airport during day ${days_left}.`;
+            days_left -= 1;
           }
           gameSetup(`http://127.0.0.1:3000/flyto?game=${parseInt(gameData.status.id)}&dest=${airport.ident}&dist=${airport.distance_to}&day=${days_left}`);
           gameSetup(`http://127.0.0.1:3000/flyto?game=${parseInt(gameData.status.id)}&dest=${airport.ident}&dist=${airport.distance_to}&day=${days_left}`);
