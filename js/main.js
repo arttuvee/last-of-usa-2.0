@@ -115,6 +115,9 @@ function updateStatus(gameData) {
           text.textContent = "Congrats you accomplished your mission! You made it safely to Key West and met up with your crew."
           const playername = document.querySelector('#player-name')
           playername.textContent += " 🏆"
+          const audioElement = new Audio('img/audio.mp3');
+          audioElement.volume = 0.5;
+          audioElement.play();
 
 
           // Tähän vois lisää viel esim sitä html elementtii
@@ -143,7 +146,7 @@ function updateStatus(gameData) {
         popupContent.classList.add('popup');
 
     } else if (!gameData.final_airport.in_range && !gameData.final_airport.charge_possibility){
-      alert('range loppu ja ei largeja rangessa')
+      alert('')
     }
   }
 
