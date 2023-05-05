@@ -10,7 +10,7 @@ Räsänen Peetu
 
 Voutilainen Arttu 
 
-Lähde seikkailulle halki postapokalyptisen Amerikan pelissä "Last of USA 2"! Ihmisen loputon kulutus on ajanut yhteiskunnan kriisiin ja romahtamisen partaalle. Olet muodostanut pienen yhteisön internetin välityksellä, mutta teillä on vain 10 päivää aikaa paeta. Matkaa lentokoneella, tutki lentokenttiä, kerää resursseja ja varo ryöstöjä, sillä jokainen päivä vie sinut lähemmäksi Floridan Key Westiä ja lopullista määränpäätäsi. Mutta muista, aika on kortilla - onnistutko keräämään tarvittavat resurssit ja tapaamaan ryhmäsi ajoissa?
+Lähde seikkailulle halki postapokalyptisen Amerikan pelissä "Last of USA 2"! Ihmisen loputon kulutus on ajanut yhteiskunnan kriisiin ja romahtamisen partaalle. Olet muodostanut pienen yhteisön internetin välityksellä, mutta teillä on vain 10 päivää aikaa paeta. Matkusta lentokoneella, tutki lentokenttiä, kerää resursseja ja varo ryöstäjiä, sillä jokainen päivä vie sinut lähemmäksi Floridan Key Westiä ja lopullista määränpäätäsi. Mutta muista, aika on kortilla - onnistutko keräämään tarvittavat resurssit ja tapaamaan ryhmäsi ajoissa?
 
 Pelin säännöt:
 
