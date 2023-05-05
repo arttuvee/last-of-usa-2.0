@@ -345,5 +345,7 @@ p {
 #hmm {
 
     color: var(--red);
-
+}
+.page-footer h2 {
+    text-align: center;
 }

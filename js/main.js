@@ -103,10 +103,20 @@ function updateStatus(gameData) {
         popupContent.append(p)
 
         final_airport_marker.bindPopup(popupContent)
+        .openPopup()
         popupContent.classList.add('popup');
 
+        const text = document.querySelector('#dialogue-target')
+        text.textContent = "You have collected all necessary resources and now you can start the journey to Key West where your crew is already waiting for you!"
+
+
         goButton.addEventListener('click',  function () {
-          alert('Congrats you accomplished your mission!')
+          alert('Congrats you accomplished your mission! ');
+          text.textContent = "Congrats you accomplished your mission! You made it safely to Key West and met up with your crew."
+          const playername = document.querySelector('#player-name')
+          playername.textContent += " 🏆"
+
+
           // Tähän vois lisää viel esim sitä html elementtii
         });
     }
@@ -206,10 +216,10 @@ try {
 
         goButton.addEventListener('click',  function () {
           if (airport.type === 'medium_airport'){
-            document.querySelector('#day-usage-taget').innerHTML = `You've chosen to explore two medium airports during day ${Math.round(days_left)}.`;
+            document.querySelector('#day-usage-taget').innerHTML = `You spent day ${Math.round(days_left)} exploring two medium sized airports.`;
             days_left -= 0.5;
           } else {
-            document.querySelector('#day-usage-taget').innerHTML = `You've chosen to explore one large airport during day ${days_left}.`;
+            document.querySelector('#day-usage-taget').innerHTML = `You spent day ${days_left} exploring one large airport.`;
             days_left -= 1;
           }
           gameSetup(`http://127.0.0.1:3000/flyto?game=${parseInt(gameData.status.id)}&dest=${airport.ident}&dist=${airport.distance_to}&day=${days_left}`);
