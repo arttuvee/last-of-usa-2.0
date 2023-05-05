@@ -16,6 +16,7 @@ let days_left = 10
 const blueIcon = L.divIcon({className: 'blue-icon'});
 const greenIcon = L.divIcon({className: 'green-icon'});
 const not_in_range_Icon = L.divIcon({className: 'not-in-range-icon'});
+const goldenIcon = L.divIcon({className: 'golden-icon'})
 const airportMarkers = L.featureGroup().addTo(map);
 
 // form for player name - Asks for player name and after submit disappears
@@ -38,14 +39,6 @@ async function fetchData(url) {
   if (!response.ok) throw new Error('Invalid server input!');
   return await response.json();
 }
-
-// function to update game status
-
-// function to show weather at selected airport
-
-// function to check if any goals have been reached
-
-// function to update goal data and goal table in UI
 
 // function to check if game is over
 function checkGameOver(range) {
@@ -82,10 +75,73 @@ function updateStatus(gameData) {
   if (gameData.status.medicine_collected === true) {
     document.querySelector('#medkit-outline').classList.add('config-1');
   }
+  // Check if all recources are found
+  if (gameData.status.water_collected && gameData.status.food_collected && gameData.status.solar_collected && gameData.status.medicine_collected) {
+    if (gameData.final_airport.in_range){
+
+        // Add a map marker for the final airport
+        const final_airport_marker = L.marker([gameData.final_airport.latitude_deg, gameData.final_airport.longitude_deg]).addTo(map);
+        final_airport_marker.setIcon(goldenIcon);
+        airportMarkers.addLayer(final_airport_marker)
+
+        // Make a div for where all popup content is stored
+        const popupContent = document.createElement('div')
+        const h4 = document.createElement('h4')
+        h4.innerHTML = gameData.final_airport.name
+        popupContent.append(h4)
+
+        // Add 'End game' button to popup content
+        const goButton = document.createElement('button')
+        goButton.classList.add('button')
+        goButton.innerHTML = 'End game'
+        popupContent.append(goButton)
+
+        // Add text content to popup content
+        const p = document.createElement('p')
+        p.innerHTML = `<b>You have collected all necessary resources and the airport is only
+        ${Math.round(gameData.final_airport.distance_to)}km away! <br> Your crew is waiting for you already <b>`
+        popupContent.append(p)
+
+        final_airport_marker.bindPopup(popupContent)
+        popupContent.classList.add('popup');
+
+        goButton.addEventListener('click',  function () {
+          alert('Congrats you accomplished your mission!')
+          // Tähän vois lisää viel esim sitä html elementtii
+        });
+    }
+
+    if (gameData.final_airport.charge_possibility){
+
+        // Add a map marker for the final airport
+        const final_airport_marker = L.marker([gameData.final_airport.latitude_deg, gameData.final_airport.longitude_deg]).addTo(map);
+        final_airport_marker.setIcon(goldenIcon);
+        airportMarkers.addLayer(final_airport_marker)
+
+        // Make a div for where all popup content is stored
+        const popupContent = document.createElement('div')
+        const h4 = document.createElement('h4')
+        h4.innerHTML = gameData.final_airport.name
+        popupContent.append(h4)
+
+        // Add text content to popup content
+        const p = document.createElement('p')
+        p.innerHTML = `You have collected all necessary resources but your planes range doesnt reach key west! Try your luck at a large airport to try and gain more range to get you to Key west`
+        popupContent.append(p)
+
+        final_airport_marker.bindPopup(popupContent)
+        popupContent.classList.add('popup');
+
+    } else if (!gameData.final_airport.in_range && !gameData.final_airport.charge_possibility){
+      alert('range loppu ja ei largeja rangessa')
+    }
+  }
+
 
   //if player doesn't have enough range to continue the game.
   const inRange = gameData.all_airports.filter(airport => airport.in_range);
   const noneRange = inRange.every(airport => !airport.in_range);
+
   if (noneRange) {
     setTimeout(() => {
     alert("Your plane has ran out of battery. Game over!");
@@ -93,8 +149,6 @@ function updateStatus(gameData) {
     const text = document.querySelector('#dialogue-target')
     text.textContent = "Your plane has ran out of battery. You didn't survive :("
   }
-
-
 }
 
 // Function to set up game - this is the main function that creates the game and calls the other functions

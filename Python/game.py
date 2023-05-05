@@ -43,9 +43,6 @@ def all_airports_in_range(current_ident, a_ports, player_range):
             a_port['in_range'] = True
         else:
             a_port['in_range'] = False
-
-        a_port['active'] = False
-        a_port['goal_opened'] = False
         a_port['distance_to'] = round(distance_between, 2)
         in_range.append(a_port)
     return in_range
@@ -61,6 +58,16 @@ def medium_airports_in_range(current_ident, a_ports, player_range):
     return mediums_in_range
 
 
+# Query to get starting airport
+def get_starting_airport():
+    sql = ' select name, ident, latitude_deg, longitude_deg from airport where iso_country = "US" and type = "small_airport" and longitude_deg > -125 order by rand() limit 1;'
+    cursor = config.conn.cursor(dictionary=True)
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    result['active'] = True
+    return result
+
+
 # Query to get all airports with matching goals
 def get_airports(game_id):
     sql = f"""SELECT a.name, a.ident, a.type, a.latitude_deg, a.longitude_deg, p.game, p.goal, p.opened FROM airport a
@@ -68,7 +75,6 @@ def get_airports(game_id):
     cur = config.conn.cursor(dictionary=True)
     cur.execute(sql)
     res = cur.fetchall()
-    res.append
     return res
 
 
@@ -102,6 +108,7 @@ class Game:
         config.player_name = get_player_data(self.game_id)[0]['screen_name']
         self.current_airport = get_airport_info(self.current_ident)[0]
         self.all_airports = get_airports(self.game_id)
+        self.final_airport = self.get_final_airport(self.current_ident, config.battery)
 
         # Placeholder text for the HTML element - This text is displayed when a new game is started
         self.event = "Welcome to the last of the USA! This box is here to keep you updated on the game events. " \
@@ -138,9 +145,6 @@ class Game:
             self.status['event'] = "You found the medical supplies you needed!"
 
         elif goal_at_current == 4:
-            self.status['event'] = 'You searched through the whole airport but came out empty handed.'
-
-        elif goal_at_current == 5:
             self.status['event'] = 'You faced a robber with bad intentions but made it out just in the nick of time.' \
                          ' Unfortunately empty handed. '
 
@@ -149,8 +153,32 @@ class Game:
         self.all_game_data = {
             'all_airports': self.airports_in_range,
             'current_airport': self.current_airport,
-            'status': self.status}
+            'status': self.status,
+            'final_airport': self.final_airport}
         return self.all_game_data
+
+    # Query to get final airport
+    def get_final_airport(self, current, range):
+        sql = "SELECT name, ident, longitude_deg, latitude_deg FROM airport WHERE name = 'Key West International Airport'"
+        cursor = config.conn.cursor(dictionary=True)
+        cursor.execute(sql)
+        final_airport = cursor.fetchall()[0]
+
+        distance_to_keyw = calculate_distance(current, 'KEYW')
+        if distance_to_keyw <= range:
+            final_airport['in_range'] = True
+        else:
+            for airport in self.all_airports:
+
+                # If the player still has large airports left the game won't end
+                if airport['type'] == 'large_airport':
+                    final_airport['charge_possibility'] = True
+                else:
+                    final_airport['charge_possibility'] = False
+                final_airport['in_range'] = False
+
+        final_airport['distance_to'] = distance_to_keyw
+        return final_airport
 
     def fly(self, game_id, dest, dist, day):
 
@@ -164,6 +192,7 @@ class Game:
         self.game_id = game_id
         self.current_ident = get_player_data(game_id)[0]['location']
         self.current_airport = get_airport_info(self.current_ident)[0]
+        self.final_airport = self.get_final_airport(self.current_ident, self.status['battery_range'])
 
         # Update database
         update_ports_table(self.game_id, dest)
@@ -172,7 +201,7 @@ class Game:
         # If this new airport is a large airport player gets more range by charging their plane
         if get_airport_info(dest)[0]['type'] == 'large_airport':
             self.status['battery_range'] += 1500
-            self.status['event'] += ". During your searching you charged your plane and got more range to play with!"
+            self.status['event'] += " During your searching you charged your plane and got more range to play with!"
 
         # Define the ident code of the airport to remove from all airports.
         ident_to_remove = dest
@@ -197,5 +226,6 @@ class Game:
             self.half_day_data = {
                 'all_airports': self.mediums_in_range,
                 'current_airport': self.current_airport,
-                'status': self.status}
+                'status': self.status,
+                'final_airport': self.final_airport}
             return self.half_day_data

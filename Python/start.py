@@ -25,18 +25,9 @@ def get_airports():
     return res
 
 
-# Query to get final airport #TODO
-def get_final_airport():
-    sql = "SELECT ident FROM airport WHERE name = 'Key West International Airport'"
-    cursor = config.conn.cursor()
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    return result
-
-
 # Get goals from API - The response is a list of 15 random numbers (0-5), These numbers act as goals.
 def get_random_goals_from_API():
-    request = "https://www.randomnumberapi.com/api/v1.0/random?min=0&max=5&count=15"
+    request = "https://www.randomnumberapi.com/api/v1.0/random?min=0&max=4&count=15"
     try:
         list_of_random_goal_numbers = requests.get(request).json()
     except Exception as e:
@@ -51,17 +42,16 @@ class Start:
     def __init__(self):
         self.all_airports = get_airports()
         self.start_airport = get_starting_airport()
-        self.final_airport = get_final_airport()
 
     # Function that starts the game and prepares the database
     def create_game(self, player_name):
 
         # Establish starting values for the new game
         config.battery = 3000
-        config.water = 0
-        config.food = 0
-        config.medicine = 0
-        config.solar = 0
+        config.water = False
+        config.food = False
+        config.medicine = False
+        config.solar = False
 
         # Bring the player name over from the url
         self.player_name = player_name

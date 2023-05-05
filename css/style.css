@@ -181,6 +181,10 @@ main {
     border-radius: 50%;
 }
 
+.golden-icon{
+    filter: none;
+    background-color: #cbb540;
+}
 
 .boxes {
     width: 100%;
