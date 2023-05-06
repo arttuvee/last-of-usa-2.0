@@ -144,9 +144,6 @@ function updateStatus(gameData) {
 
         final_airport_marker.bindPopup(popupContent)
         popupContent.classList.add('popup');
-
-    } else if (!gameData.final_airport.in_range && !gameData.final_airport.charge_possibility){
-      alert('')
     }
   }
 
