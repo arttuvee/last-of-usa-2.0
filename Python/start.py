@@ -25,7 +25,7 @@ def get_airports():
     return res
 
 
-# Get goals from API - The response is a list of 15 random numbers (0-5), These numbers act as goals.
+# Get goals from API - The response is a list of 15 random numbers (0-4), These numbers act as goals.
 def get_random_goals_from_API():
     request = "https://www.randomnumberapi.com/api/v1.0/random?min=0&max=4&count=15"
     try:
@@ -55,8 +55,6 @@ class Start:
 
         # Bring the player name over from the url
         self.player_name = player_name
-
-        # Update config name to the name from url
         config.player_name = self.player_name
 
         # Get a random airport from the US to use as a starting airport

@@ -1,7 +1,6 @@
 import json
 import os
 from start import Start
-import game
 from game import Game
 
 import mysql.connector

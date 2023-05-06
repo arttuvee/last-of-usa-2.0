@@ -48,7 +48,7 @@ def all_airports_in_range(current_ident, a_ports, player_range):
     return in_range
 
 
-# get airports in range
+# get medium airports in range
 def medium_airports_in_range(current_ident, a_ports, player_range):
     mediums_in_range = []
     all_airports_list = all_airports_in_range(current_ident,a_ports,player_range)
@@ -125,8 +125,8 @@ class Game:
             "event": self.event
         }
 
-    def what_goal_in_airport(self, game_id, dest):
-        goal_at_current = check_goal(game_id, dest)[0]['goal']
+    def what_goal_in_airport(self, game_id, destination_ident):
+        goal_at_current = check_goal(game_id, destination_ident)[0]['goal']
 
         if goal_at_current == 0:
             self.status['food_collected'] = True
@@ -170,7 +170,7 @@ class Game:
         else:
             for airport in self.all_airports:
 
-                # If the player still has large airports left the game won't end
+                # Check if the player can still charge their plane
                 if airport['type'] == 'large_airport':
                     final_airport['charge_possibility'] = True
                 else:
@@ -180,13 +180,13 @@ class Game:
         final_airport['distance_to'] = distance_to_keyw
         return final_airport
 
-    def fly(self, game_id, dest, dist, day):
+    def fly(self, game_id, destination_ident, dist, day):
 
         # travel distance is subtracted from battery range
         self.status['battery_range'] -= float(dist)/2
 
         # Check what goal does this destination airport contain and update the player
-        self.what_goal_in_airport(game_id, dest)
+        self.what_goal_in_airport(game_id, destination_ident)
 
         # Update player data on new location
         self.game_id = game_id
@@ -195,18 +195,17 @@ class Game:
         self.final_airport = self.get_final_airport(self.current_ident, self.status['battery_range'])
 
         # Update database
-        update_ports_table(self.game_id, dest)
-        update_game_table(self.game_id, dest, self.status['battery_range'])
+        update_ports_table(self.game_id, destination_ident)
+        update_game_table(self.game_id, destination_ident, self.status['battery_range'])
 
         # If this new airport is a large airport player gets more range by charging their plane
-        if get_airport_info(dest)[0]['type'] == 'large_airport':
+        if get_airport_info(destination_ident)[0]['type'] == 'large_airport':
             self.status['battery_range'] += 1500
             self.status['event'] += " During your searching you charged your plane and got more range to play with!"
 
         # Define the ident code of the airport to remove from all airports.
-        ident_to_remove = dest
+        ident_to_remove = destination_ident
 
-        # Iterate through the list and remove the element with matching ident code
         for i in range(len(self.all_airports)):
             if self.all_airports[i]["ident"] == ident_to_remove:
                 self.all_airports.pop(i)

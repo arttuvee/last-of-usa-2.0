@@ -40,15 +40,6 @@ async function fetchData(url) {
   return await response.json();
 }
 
-// function to check if game is over
-function checkGameOver(range) {
-  if (range <= 0) {
-    alert(
-        `You ran out of range Game Over. ${globalGoals.length} goals reached.`);
-    return false;
-  }
-  return true;
-}
 
 function updateStatus(gameData) {
 
@@ -118,9 +109,6 @@ function updateStatus(gameData) {
           const audioElement = new Audio('img/audio.mp3');
           audioElement.volume = 0.5;
           audioElement.play();
-
-
-          // Tähän vois lisää viel esim sitä html elementtii
         });
     }
 
