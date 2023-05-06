@@ -34,7 +34,7 @@ def get_random_goals_from_API():
         print(f"Error occurred while requesting random goals from API: {e}")
 
         # If there is an error with the API - manually generate equivalent goal list
-        list_of_random_goal_numbers = [random.randint(0, 5) for i in range(15)]
+        list_of_random_goal_numbers = [random.randint(0, 4) for i in range(15)]
     return list_of_random_goal_numbers
 
 
